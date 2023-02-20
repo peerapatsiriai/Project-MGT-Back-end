@@ -6,7 +6,7 @@ const uuid = uuidv4()
 const env = require('../env.js');
 const config = require('../dbconfig.js')[env];
 
-function getOnlineAgentByAgentCode(agentcode) {
+async function getOnlineAgentByAgentCode(agentcode) {
     let connection;
 
     try {
@@ -50,11 +50,14 @@ function getOnlineAgentByAgentCode(agentcode) {
         });
 
     } finally {
-        if (connection && connection.end) connection.end();
+     //   if (connection && connection.end) connection.destroy();
+        //if (connection && connection.end) connection.end();
+       // if (connection && connection.end) connection.end(error => error ? reject(error) : resolve());
+
     }
 }
 
-function setConnectToSoftphone(agent_code,is_login) {
+async function setConnectToSoftphone(agent_code,is_login) {
     let connection;
 
     try {

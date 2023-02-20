@@ -97,7 +97,7 @@ const init = async () => {
         path: '/api/v1/agent',
         config: {
             payload: {
-                multipart : true  // <== this is important in hapi 19
+                multipart: true,
                 //output: 'stream',
                 //parse: true,
                 //allow: ['application/json', 'multipart/form-data',  'application/x-www-form-urlencoded'],
@@ -505,5 +505,33 @@ process.on('unhandledRejection', (err) => {
 });
 
 init();
+
+//--- Schedule setAvgWaitingTime API Call every 15 minutes -----
+
+var schedule = require('node-schedule');
+var request = require('request');
+
+var serverUrl = 'http://localhost:3200/api/v1';
+
+schedule.scheduleJob('*/15 * * * *', function () {
+    var options = {
+        url: serverUrl + '/setavgwaitingtime',
+        /*
+        headers: {
+            'X-Parse-Application-Id': appID,
+            'X-Parse-Master-Key': masterKey,
+            'Content-Type': 'application/json'
+        }
+        */
+    };
+    request.post(options, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            //console.log(body);
+            console.log("Call setAvgWaitingTime API OK!!");
+        } else
+            console.log("Call setAvgWaitingTime API ERROR!!");
+    });
+
+});
 
 //-----------------------
