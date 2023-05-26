@@ -2,11 +2,10 @@
 var dbconfig = {
     development: {
         //connectionLimit : 10,
-        host: '127.0.0.1',
-        port: '4406',
-        user: 'devremote',
-        password: '1q2w3e4rP;;',
-        database: '3cx-buzz'
+        host: 'localhost',
+        user: 'root',
+        password: '',
+        database: 'project_mgt'
     },
     production: {
         //connectionLimit : 10,
