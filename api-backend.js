@@ -61,7 +61,7 @@ console.log("Running Environment: " + env);
 const init = async () => {
   const server = hapi.Server({
     port: hapiPort,
-    host: "0.0.0.0",
+    host: "localhost",
     routes: {
       cors: true,
     },
