@@ -10,11 +10,11 @@ var dbconfig = {
     production: {
         //connectionLimit : 10,
         //host: '128.199.188.223',
-        host: '127.0.0.1',
-        port: '4406',
-        user: 'root',
-        password: '1q2w3e4rP@ssw0rd',
-        database: '3cx-buzz'
+        host: 'yjo6uubt3u5c16az.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+        port: '3306',
+        user: 'm1i0apdnwx6uuqhx',
+        password: 'm56uhwdpjpsoa44v',
+        database: 'cff5144ks6iiu375'
     }
 };
 module.exports = dbconfig;

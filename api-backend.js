@@ -14,10 +14,13 @@ const Outbound = require("./respository/Outbound");
 const OnlineAgent = require("./respository/OnlineAgent");
 const Satisfaction = require("./respository/Satisfaction");
 //------------------------------------------------------------------------------//
-const InSertProject = require("./respository/project_mgt/InsertPreproject");
-const DisplayProject = require("./respository/project_mgt/DisplayProjects");
+//const InSertProject = require("./respository/project_mgt/InsertPreproject");
+//const DisplayProject = require("./respository/project_mgt/DisplayProjects");
 //------------------------------------------------------------------------------//
-const project_mgt_route = require("./routes/project_mgt/backOffice")
+//-------------------- Routes --------------------//
+const Project_mgt_route_backoffice = require("./routes/project_mgt/backOffice")
+const Project_mgt_route_searching = require("./routes/project_mgt/searching")
+
 //------------------------------------------------------------------------------//
 const env = require("./env.js");
 
@@ -65,14 +68,16 @@ const init = async () => {
   });
 
   ///////////////////////////////// START ////////////////////////////////////////////
-  project_mgt_route(server)
+  Project_mgt_route_backoffice(server)
+  Project_mgt_route_searching(server)
   //////////////////////////////// END //////////////////////////////////////////////
-
+  
   // Greeting API
   server.route({
     method: "GET",
     path: "/",
     handler: () => {
+      
       return "<h3> Welcome to CE Reform API V1.0.1</h3>";
     },
   });
