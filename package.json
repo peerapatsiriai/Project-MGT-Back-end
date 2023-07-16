@@ -5,7 +5,8 @@
   "main": "api-backend.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon api-backend.js"
+    "start": "pm2 start api-backend.js",
+    "stop":"pm2 stop api-backend.js"
   },
   "author": "",
   "license": "ISC",

@@ -16,7 +16,7 @@ module.exports = (server) => {
   // เพิ่มหัวข้อโครงงานใหม่เข้าสู่ระบบจาก Back Office
   server.route({
     method: "POST",
-    path: "/api/insertpreproject",
+    path: "/api/project-mgt/insertpreproject",
     handler: async function (request, reply) {
       var body = request.payload;
       const {
