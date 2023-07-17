@@ -1,5 +1,5 @@
-const InSertProject = require('../../respository/project_mgt/searching');
-const DisplayProject = require('../../respository/project_mgt/backoffice');
+const InSertProject = require('../../../respository/project_mgt/searching');
+const DisplayProject = require('../../../respository/project_mgt/backoffice');
 
 module.exports = (server) => {
 

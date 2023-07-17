@@ -18,8 +18,8 @@ const Satisfaction = require("./respository/Satisfaction");
 //const DisplayProject = require("./respository/project_mgt/DisplayProjects");
 //------------------------------------------------------------------------------//
 //-------------------- Routes --------------------//
-const Project_mgt_route_backoffice = require("./routes/project_mgt/backOffice")
-const Project_mgt_route_searching = require("./routes/project_mgt/searching")
+const Project_mgt_route_backoffice = require("./routes/project_mgt/backOffice/backOffice")
+const Project_mgt_route_searching = require("./routes/project_mgt/backOffice/searching")
 
 //------------------------------------------------------------------------------//
 const env = require("./env.js");

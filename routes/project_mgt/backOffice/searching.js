@@ -1,5 +1,5 @@
-const InSertProject = require('../../respository/project_mgt/searching');
-const DisplayProject = require('../../respository/project_mgt/backoffice');
+const searching = require('../../../respository/project_mgt/searching');
+const backoffice = require('../../../respository/project_mgt/backoffice');
 
 module.exports = (server) => {
 
@@ -15,7 +15,7 @@ module.exports = (server) => {
     handler: async function (request, reply) {
       try {
         const responsedata =
-          await InSertProject.InsertProjectRepo.getAllCurriculums();
+          await searching.searchingRepo.getAllCurriculums();
         if (responsedata.error) {
           return responsedata.errMessage;
         } else {
@@ -38,7 +38,7 @@ module.exports = (server) => {
       const { curriculum_id } = param;
       try {
         const responsedata =
-          await InSertProject.InsertProjectRepo.getAllSubjectInCurriculums(
+          await searching.searchingRepo.getAllSubjectInCurriculums(
             curriculum_id
           );
         if (responsedata.error) {
@@ -63,7 +63,7 @@ module.exports = (server) => {
       const { subject_id } = param;
       try {
         const responsedata =
-          await InSertProject.InsertProjectRepo.getAllSubjectYears(subject_id);
+          await searching.searchingRepo.getAllSubjectYears(subject_id);
         if (responsedata.error) {
           return responsedata.errMessage;
         } else {
@@ -86,7 +86,7 @@ module.exports = (server) => {
       const { subject_id, year } = param;
       try {
         const responsedata =
-          await InSertProject.InsertProjectRepo.getAllSectionInYear(
+          await searching.searchingRepo.getAllSectionInYear(
             subject_id,
             year
           );
@@ -110,7 +110,7 @@ module.exports = (server) => {
     handler: async function (request, reply) {
       try {
         const responsedata =
-          await DisplayProject.DisplayProjectRepo.getAllPreprojects();
+          await backoffice.backofficeRepo.getAllPreprojects();
         if (responsedata.error) {
           return responsedata.errMessage;
         } else {
@@ -131,7 +131,27 @@ module.exports = (server) => {
     handler: async function (request, reply) {
       try {
         const responsedata =
-          await InSertProject.InsertProjectRepo.getAllListInstructors();
+          await searching.searchingRepo.getAllListInstructors();
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(["error", "home"], err);
+        return err;
+      }
+    },
+  });
+
+  //API: http://localhost:3200/api/project-mgt/students
+  // ส่งข้อมูลอาจารย์ทั้งหมดโดยไม่มีเงื่อนไข
+  server.route({
+    method: "GET",
+    path: "/api/project-mgt/students",
+    handler: async function (request, reply) {
+      try {
+          responsedata = await searching.searchingRepo.getAllListStudents();
         if (responsedata.error) {
           return responsedata.errMessage;
         } else {

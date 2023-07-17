@@ -29,7 +29,7 @@ async function getAllCurriculums() {
       } else {
         pool.end();
         return resolve({
-          statusCode: 204,
+          statusCode: 404,
           message: 'Curriculum not found',
         });
       }
@@ -273,11 +273,42 @@ async function getAllListInstructors() {
   });
 }
 
-module.exports.InsertProjectRepo = {
+async function getAllListStudents() {
+  var Query;
+  var pool = mysql.createPool(config);
+
+  return new Promise((resolve, reject) => {
+    Query = `SELECT * FROM students`;
+    console.log('Query is: ', Query);
+
+    pool.query(Query, function (error, results, fields) {
+      if (error) throw error;;
+      if (results.length > 0) {
+        pool.end();
+        return resolve({
+          statusCode: 200,
+          returnCode: 1,
+          data: results,
+          message: 'SearchAllSubjects Success',
+        });
+      } else {
+        pool.end();
+        return resolve({
+          statusCode: 404,
+          returnCode: 11,
+          message: 'Year Not found',
+        });
+      }
+    });
+  });
+}
+
+module.exports.searchingRepo = {
   getAllCurriculums: getAllCurriculums,
   getAllSubjectInCurriculums: getAllSubjectInCurriculums,
   getAllSubjectYears: getAllSubjectYears,
   getAllSectionInYear: getAllSectionInYear,
   insertNewPreProject: insertNewPreProject,
   getAllListInstructors: getAllListInstructors,
+  getAllListStudents: getAllListStudents,
 };

@@ -42,6 +42,6 @@ async function getAllPreprojects() {
 
 
 
-module.exports.DisplayProjectRepo = {
+module.exports.backofficeRepo = {
   getAllPreprojects:getAllPreprojects
 };
