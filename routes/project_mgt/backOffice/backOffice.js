@@ -2,12 +2,10 @@ const InSertProject = require('../../../respository/project_mgt/searching');
 const DisplayProject = require('../../../respository/project_mgt/backoffice');
 
 module.exports = (server) => {
-
   ////////////////////////////////////////////////////////////////////////////////////
   //------------------------------- GET --------------------------------------------//
   ////////////////////////////////////////////////////////////////////////////////////
-  
-  
+
   ////////////////////////////////////////////////////////////////////////////////////
   //------------------------------- POST -------------------------------------------//
   ////////////////////////////////////////////////////////////////////////////////////
@@ -15,8 +13,17 @@ module.exports = (server) => {
   //API: http://localhost:3000/api/project-mgt/curriculums/subjects?curriculum_id=2
   // เพิ่มหัวข้อโครงงานใหม่เข้าสู่ระบบจาก Back Office
   server.route({
-    method: "POST",
-    path: "/api/project-mgt/insertpreproject",
+    method: 'POST',
+    path: '/api/project-mgt/insertpreproject',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
     handler: async function (request, reply) {
       var body = request.payload;
       const {
@@ -30,20 +37,32 @@ module.exports = (server) => {
         studenlist,
         adviser,
         subadviser,
-        committee
+        committee,
       } = body;
       try {
-        const responsedata = await InSertProject.InsertProjectRepo.insertNewPreProject(section_id,preproject_name_th,preproject_name_eng,project_code,project_status,project_type,created_by,studenlist,adviser,subadviser,committee);
+        const responsedata =
+          await InSertProject.InsertProjectRepo.insertNewPreProject(
+            section_id,
+            preproject_name_th,
+            preproject_name_eng,
+            project_code,
+            project_status,
+            project_type,
+            created_by,
+            studenlist,
+            adviser,
+            subadviser,
+            committee
+          );
         if (responsedata.error) {
           return responsedata.errMessage;
         } else {
           return responsedata;
         }
       } catch (err) {
-        server.log(["error", "home"], err);
+        server.log(['error', 'home'], err);
         return err;
       }
     },
   });
-
 };

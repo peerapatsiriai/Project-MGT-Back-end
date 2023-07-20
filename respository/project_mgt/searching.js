@@ -58,7 +58,7 @@ async function getAllSubjectInCurriculums(curriculum_id) {
       } else {
         pool.end();
         return resolve({
-          statusCode: 204,
+          statusCode: 404,
           message: 'Subject not found',
         });
       }
@@ -90,7 +90,7 @@ async function getAllSubjectYears(subject_id) {
         pool.end();
 
         return resolve({
-          statusCode: 204,
+          statusCode: 404,
           returnCode: 11,
           message: 'Year Not found',
         });
@@ -121,7 +121,7 @@ async function getAllSectionInYear(subject_id, year) {
       } else {
         pool.end();
         return resolve({
-          statusCode: 204,
+          statusCode: 404,
           returnCode: 11,
           message: 'Year Not found',
         });
@@ -264,7 +264,7 @@ async function getAllListInstructors() {
       } else {
         pool.end();
         return resolve({
-          statusCode: 204,
+          statusCode: 404,
           returnCode: 11,
           message: 'Year Not found',
         });
