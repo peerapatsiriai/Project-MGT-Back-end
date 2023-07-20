@@ -8,11 +8,11 @@ const Joi = require("joi");
 const axios = require("axios");
 const FormData = require("form-data");
 
-const AgentStatus = require("./respository/AgentStatus");
-const Inbound = require("./respository/Inbound");
-const Outbound = require("./respository/Outbound");
-const OnlineAgent = require("./respository/OnlineAgent");
-const Satisfaction = require("./respository/Satisfaction");
+// const AgentStatus = require("./respository/AgentStatus");
+// const Inbound = require("./respository/Inbound");
+// const Outbound = require("./respository/Outbound");
+// const OnlineAgent = require("./respository/OnlineAgent");
+// const Satisfaction = require("./respository/Satisfaction");
 //------------------------------------------------------------------------------//
 //const InSertProject = require("./respository/project_mgt/InsertPreproject");
 //const DisplayProject = require("./respository/project_mgt/DisplayProjects");
