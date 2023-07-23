@@ -5,6 +5,7 @@ const uuid = uuidv4();
 const env = require("../../env.js");
 const config = require("../../dbconfig.js")[env];
 const util = require('util');
+const { get } = require("request");
 /////////////////////////////////////////////////////////////////////////////////
 
 const pool = mysql.createPool(config);

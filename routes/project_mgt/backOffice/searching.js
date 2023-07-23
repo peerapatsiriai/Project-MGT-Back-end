@@ -226,6 +226,34 @@ module.exports = (server) => {
     },
   });
 
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/preproject',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var param = request.query;
+      const { preproject_id } = param;
+      try {
+        const responsedata = await searching.searchingRepo.getonePreproject(preproject_id);
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
 
   ////////////////////////////////////////////////////////////////////////////////////
   //------------------------------- POST -------------------------------------------//
