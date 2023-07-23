@@ -5,9 +5,9 @@
   "main": "api-backend.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev":"nodemon api-backend.js",
+    "dev": "nodemon api-backend.js",
     "start": "pm2 start api-backend.js",
-    "stop":"pm2 stop api-backend.js"
+    "stop": "pm2 stop api-backend.js"
   },
   "author": "",
   "license": "ISC",
@@ -24,7 +24,9 @@
     "node-schedule": "^2.0.0",
     "node-windows": "^1.0.0-beta.5",
     "nodemon": "^2.0.22",
+    "pm2": "^5.3.0",
     "request": "^2.88.2",
+    "util": "^0.12.5",
     "uuidv4": "^6.2.13",
     "we": "^1.5.10",
     "ws": "^8.12.1"

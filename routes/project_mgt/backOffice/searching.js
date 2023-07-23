@@ -154,7 +154,7 @@ module.exports = (server) => {
     handler: async function (request, reply) {
       try {
         const responsedata =
-          await backoffice.backofficeRepo.getAllPreprojects();
+          await searching.searchingRepo.getAllPreprojects();
         if (responsedata.error) {
           return responsedata.errMessage;
         } else {
