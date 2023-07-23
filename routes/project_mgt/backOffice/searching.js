@@ -1,5 +1,5 @@
-const searching = require('../../../respository/project_mgt/searching');
-const backoffice = require('../../../respository/project_mgt/backoffice');
+const searching = require('../../../respository/project_mgt/searchingControllers');
+const backoffice = require('../../../respository/project_mgt/backofficeControllers');
 
 module.exports = (server) => {
   

@@ -1,5 +1,5 @@
-const InSertProject = require('../../../respository/project_mgt/searching');
-const BackOffice = require('../../../respository/project_mgt/backoffice');
+const InSertProject = require('../../../respository/project_mgt/searchingControllers');
+const BackOffice = require('../../../respository/project_mgt/backofficeControllers');
 
 module.exports = (server) => {
   
