@@ -42,6 +42,7 @@ async function insertNewPreProject(
       project_status,
       created_by
     ]);
+    console.log("Query is: ", insertPreprojectQuery, [section_id, preproject_name_th, preproject_name_eng, project_code, project_type, project_status, created_by]);
     
     // If the insert failed, throw an error
     if (!insertResult || !insertResult.insertId) {
@@ -53,17 +54,23 @@ async function insertNewPreProject(
     // Insert the students Preproject
     for (let student of studen_id) {
       await poolQuery(insertStudentQuery, [preproject_id, student]);
+      console.log("Query is: ", insertStudentQuery,[preproject_id, student]);
     }
     
+
     // insert the adviser
     await poolQuery(insertAdviserQuery, [preproject_id, adviser]);
+    console.log("Query is: ", insertAdviserQuery,[preproject_id, adviser]);
   
     for(let subadviserid of subadviser){
       await poolQuery(insertSubAdviserQuery, [preproject_id, subadviserid]);
+      console.log("Query is: ", insertSubAdviserQuery, [preproject_id, subadviserid]);
     }
+    
 
     for(let committeeid of committee){
       await poolQuery(insertCommitteeQuery, [preproject_id, committeeid]);
+      console.log("Query is: ", insertCommitteeQuery, [preproject_id, committeeid]);
     }
     // Return success
     return {

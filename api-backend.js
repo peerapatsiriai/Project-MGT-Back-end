@@ -1,117 +1,61 @@
-const hapi = require("@hapi/hapi");
-//const H2o2 = require('@hapi/h2o2');
-var express = require("express");
-const AuthBearer = require("hapi-auth-bearer-token");
-
-var express = require("express");
+const Hapi = require("@hapi/hapi");
 const Joi = require("joi");
 const axios = require("axios");
 const FormData = require("form-data");
 
-// const AgentStatus = require("./respository/AgentStatus");
-// const Inbound = require("./respository/Inbound");
-// const Outbound = require("./respository/Outbound");
-// const OnlineAgent = require("./respository/OnlineAgent");
-// const Satisfaction = require("./respository/Satisfaction");
-//------------------------------------------------------------------------------//
-//const InSertProject = require("./respository/project_mgt/InsertPreproject");
-//const DisplayProject = require("./respository/project_mgt/DisplayProjects");
-//------------------------------------------------------------------------------//
-//-------------------- Routes --------------------//
-const Project_mgt_route_backoffice = require("./routes/project_mgt/backOffice/backOffice")
-const Project_mgt_route_searching = require("./routes/project_mgt/backOffice/searching")
+// ------------------- Routes ------------------- //
+const Project_mgt_route_backoffice = require("./routes/project_mgt/backOffice/backOffice");
+const Project_mgt_route_searching = require("./routes/project_mgt/backOffice/searching");
 
-//------------------------------------------------------------------------------//
-const env = require("./env.js");
-
-//---------------- Websocket -----------------------------
+// ------------------ Websocket ----------------- //
 const hapiPort = 3200;
-const webSocketPort = 3201;
 const webPort = 3280;
 
-var url = require("url");
-
-//init Express
-var app = express();
-//init Express Router
-var router = express.Router();
-
-//REST route for GET /status
-router.get("/status", function (req, res) {
-  res.json({
-    status: "App is running!",
-  });
-});
-
-//connect path to router
-app.use("/", router);
-
-//add middleware for static content
-app.use(express.static("static"));
-var webserver = app.listen(webPort, function () {
-  console.log("Websockets listening on port: " + webSocketPort);
-  console.log("Webserver running on port: " + webPort);
-});
-
-//var env = process.env.NODE_ENV || 'development';
-//var env = process.env.NODE_ENV || 'production';
-
-console.log("Running Environment: " + env);
-
 const init = async () => {
-  const server = hapi.Server({
+  const server = Hapi.Server({
     port: hapiPort,
-    host: "localhost",
+    host: "0.0.0.0", // Change this to your LAN IP address if needed
     routes: {
       cors: true,
     },
   });
 
-  ///////////////////////////////// START ////////////////////////////////////////////
-  Project_mgt_route_backoffice(server)
-  Project_mgt_route_searching(server)
-  //////////////////////////////// END //////////////////////////////////////////////
-  
+  // Replace this part with your actual route handlers
+  Project_mgt_route_backoffice(server);
+  Project_mgt_route_searching(server);
+  // ...
+
   // Greeting API
   server.route({
     method: "GET",
     path: "/",
     handler: () => {
-      
       return "<h3> Welcome to CE Reform API V1.0.1</h3>";
     },
   });
 
-  //API: http://localhost:3000/getOnlineAgentByAgentCode?agentcode=08926
+  // API: http://localhost:3200/api/v1/getaveragewaitingtime
   server.route({
     method: "GET",
     path: "/api/v1/getaveragewaitingtime",
     config: {
-      // auth: {
-      //     strategy: 'jwt-strict',
-      //     mode: 'required'
-      // },
       cors: {
         origin: ["*"],
         additionalHeaders: ["cache-control", "x-requested-width"],
       },
     },
-    handler: async function (request, reply) {
+    handler: async (request, h) => {
       try {
-        const responsedata =
-          await Satisfaction.SatisfactionRepo.getAverageWaitingTime();
+        const responsedata = await Satisfaction.SatisfactionRepo.getAverageWaitingTime();
         if (responsedata.error) {
-          return responsedata.errMessage;
+          return h.response(responsedata.errMessage).code(500);
         } else {
-          //return responsedata;
-
           console.log("responsedata: ", responsedata);
-
-          return responsedata;
+          return h.response(responsedata);
         }
       } catch (err) {
-        server.log(["error", "home"], err);
-        return err;
+        console.error(err);
+        return h.response("Internal Server Error").code(500);
       }
     },
   });
@@ -126,5 +70,3 @@ process.on("unhandledRejection", (err) => {
 });
 
 init();
-
-//-----------------------
