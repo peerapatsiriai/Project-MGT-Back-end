@@ -195,6 +195,8 @@ async function getAllPreprojects() {
                    ON sec.subject_id = sub.subject_id
                    INNER JOIN curriculums AS cur
                    ON sub.curriculum_id = cur.curriculum_id
+                   WHERE is_deleted = 0 
+                   ORDER BY preproject_id DESC
                    `;
     // console.log("Query1 is: ", Query);
 
@@ -224,6 +226,7 @@ async function getAllPreprojects() {
 
 async function getonePreproject(preproject_id) {
   try {
+
     const PreprojectQuery = `SELECT * FROM
       preprojects AS pe
       INNER JOIN year_sem_sections AS sec
@@ -263,14 +266,50 @@ async function getonePreproject(preproject_id) {
                             ON com.instructor_id = ins.instructor_id
                             WHERE pre.preproject_id = '${preproject_id}'
     `
+
+    const documentQuery = `SELECT DISTINCT document_type,
+                           CASE WHEN document_status > 1 THEN 'complete'
+                           ELSE 'not pass'
+                           END AS status
+                           FROM preprojects_documents
+                           WHERE preproject_id = ${preproject_id} AND document_status != 0;
+`
     // Execute both queries asynchronously
-    const [preprojectResults, studentResults, subadviserResults, committeeResult] = await Promise.all([
+    // const [preprojectResults, studentResults, subadviserResults, committeeResult, documentResult] = await Promise.all([
+    const [preprojectResults, studentResults, subadviserResults, committeeResult, documentResult] = await Promise.all([
       poolQuery(PreprojectQuery),
       poolQuery(StudentQuery),
       poolQuery(subadviserQuery),
-      poolQuery(committeeQuery)
+      poolQuery(committeeQuery),
+      poolQuery(documentQuery),
     ]);
     
+    let ListDocument = { 
+      ce01:{'status':'ยังไม่ผ่าน'}, 
+      ce02:{'status':'ยังไม่ผ่าน'}, 
+      ce03:{'status':'ยังไม่ผ่าน'}, 
+      ce04:{'status':'ยังไม่ผ่าน'}, 
+      ce05:{'status':'ยังไม่ผ่าน'}, 
+      ce06:{'status':'ยังไม่ผ่าน'}
+    }
+    
+    // Fine Same CE document
+    const separateCE = async (data) => {
+      data.forEach(element => {
+        // update status
+        if(element.status === "complete") {
+          if (element.document_type === 'CE01') { ListDocument.ce01.status = "ผ่านแล้ว" }
+          else if (element.document_type === 'CE01') { ListDocument.ce01.status = "ผ่านแล้ว" }
+          else if (element.document_type === 'CE02') { ListDocument.ce02.status = "ผ่านแล้ว" }
+          else if (element.document_type === 'CE03') { ListDocument.ce03.status = "ผ่านแล้ว" }
+          else if (element.document_type === 'CE04') { ListDocument.ce04.status = "ผ่านแล้ว" }
+          else if (element.document_type === 'CE05') { ListDocument.ce05.status = "ผ่านแล้ว" }
+          else if (element.document_type === 'CE06') { ListDocument.ce06.status = "ผ่านแล้ว" }
+        }
+      });
+    }
+    separateCE(documentResult.results)
+
     if (preprojectResults.results.length > 0) {
       return {
         statusCode: 200,
@@ -279,6 +318,7 @@ async function getonePreproject(preproject_id) {
         PreprojectSubAdviser: subadviserResults.results,
         PreprojectStudent: studentResults.results,
         PreprojectCommittee: committeeResult.results,
+        PreprojectDocument: ListDocument,
         message: "SearchPre-project Success",
       };
     } else {

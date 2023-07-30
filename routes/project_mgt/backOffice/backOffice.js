@@ -48,7 +48,92 @@ module.exports = (server) => {
             committee
           );
         if (responsedata.error) {
-          return responsedata.errMessage;
+          return responsedata;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+  server.route({
+    method: 'POST',
+    path: '/api/project-mgt/updatepreproject',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var body = request.payload;
+      const {
+        preproject_id,
+        section_id,
+        preproject_name_th,
+        preproject_name_eng,
+        project_code,
+        project_status,
+        project_type,
+        studen_id,
+        adviser,
+        subadviser,
+        committee
+      } = body;
+      try {
+        const responsedata =
+          await BackOffice.backofficeRepo.updatePreProject(
+            preproject_id,
+            section_id,
+            preproject_name_th,
+            preproject_name_eng,
+            project_code,
+            project_status,
+            project_type,
+            studen_id,
+            adviser,
+            subadviser,
+            committee
+          );
+        if (responsedata.error) {
+          return responsedata;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+
+  server.route({
+    method: 'PUT',
+    path: '/api/project-mgt/deletepreproject',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var body = request.payload;
+      const { preproject_id } = body;
+      try {
+        const responsedata =
+          await BackOffice.backofficeRepo.deletePreproject( preproject_id );
+        if (responsedata.error) {
+          return responsedata;
         } else {
           return responsedata;
         }
