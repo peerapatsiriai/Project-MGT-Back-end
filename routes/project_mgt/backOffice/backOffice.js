@@ -113,7 +113,6 @@ module.exports = (server) => {
     },
   });
 
-
   server.route({
     method: 'PUT',
     path: '/api/project-mgt/deletepreproject',

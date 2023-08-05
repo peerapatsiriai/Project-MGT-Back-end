@@ -110,13 +110,13 @@ async function getAllSectionInYear(subject_id, year) {
         statusCode: 200,
         returnCode: 1,
         data: results,
-        message: 'SearchAllSubjects Success',
+        message: 'Search All Section Success',
       };
     } else {
       return {
         statusCode: 404,
         returnCode: 11,
-        message: 'Year Not found',
+        message: 'Section Not found',
       };
     }
   } catch (error) {
@@ -139,13 +139,13 @@ async function getAllListInstructors() {
         statusCode: 200,
         returnCode: 1,
         data: results,
-        message: 'SearchAllSubjects Success',
+        message: 'Search All Instructors Success',
       };
     } else {
       return {
         statusCode: 404,
         returnCode: 11,
-        message: 'Year Not found',
+        message: 'Instructors Not found',
       };
     }
   } catch (error) {
@@ -168,13 +168,13 @@ async function getAllListStudents() {
         statusCode: 200,
         returnCode: 1,
         data: results,
-        message: 'SearchAllSubjects Success',
+        message: 'Search All Studen Success',
       };
     } else {
       return {
         statusCode: 404,
         returnCode: 11,
-        message: 'Year Not found',
+        message: 'Studens Not found',
       };
     }
   } catch (error) {
@@ -207,13 +207,13 @@ async function getAllPreprojects() {
         statusCode: 200,
         returnCode: 1,
         data: results,
-        message: "SearchAllCurriculum Success",
+        message: "Sear Pre-project Success",
       };
     } else {
       return {
         statusCode: 404,
         returnCode: 11,
-        message: "Curriculum not found",
+        message: "Pre-project not found",
       };
     }
   } catch (error) {
@@ -301,7 +301,7 @@ async function getonePreproject(preproject_id) {
           if (element.document_type === 'CE01') { ListDocument.ce01.status = "ผ่านแล้ว" }
           else if (element.document_type === 'CE01') { ListDocument.ce01.status = "ผ่านแล้ว" }
           else if (element.document_type === 'CE02') { ListDocument.ce02.status = "ผ่านแล้ว" }
-          else if (element.document_type === 'CE03') { ListDocument.ce03.status = "ผ่านแล้ว" }
+          else if (element.document_type === 'CE03-4-G') { ListDocument.ce03.status = "ผ่านแล้ว" }
           else if (element.document_type === 'CE04') { ListDocument.ce04.status = "ผ่านแล้ว" }
           else if (element.document_type === 'CE05') { ListDocument.ce05.status = "ผ่านแล้ว" }
           else if (element.document_type === 'CE06') { ListDocument.ce06.status = "ผ่านแล้ว" }

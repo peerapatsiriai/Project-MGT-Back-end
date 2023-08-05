@@ -1,6 +1,6 @@
 const searching = require('../../../respository/project_mgt/searchingControllers');
 const backoffice = require('../../../respository/project_mgt/backofficeControllers');
-
+const transfer = require('../../../respository/project_mgt/transferControllers');
 module.exports = (server) => {
   
   ////////////////////////////////////////////////////////////////////////////////////
@@ -255,7 +255,61 @@ module.exports = (server) => {
     },
   });
 
-  ////////////////////////////////////////////////////////////////////////////////////
-  //------------------------------- POST -------------------------------------------//
-  ////////////////////////////////////////////////////////////////////////////////////
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/getallyearsubjectproject',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var param = request.query;
+      const { preproject_id } = param;
+      try {
+        const responsedata = await transfer.transferRepo.searchYearInOnePreproject(preproject_id);
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/getallsecinprojectsubject',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var param = request.query;
+      const { subject_project_id, year } = param;
+      try {
+        const responsedata = await transfer.transferRepo.searchAllSecInOneProjectSubject(subject_project_id, year);
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
 };
