@@ -158,7 +158,7 @@ module.exports = (server) => {
         origin: ['*'],
       },
     },
-    handler: async function (request, reply) {
+    handler: async function (request, h) {
       var body = request.payload;
       const { preproject_id, section_id } = body;
       try {
@@ -166,9 +166,11 @@ module.exports = (server) => {
         if (responsedata.error) {
           return responsedata;
         } else {
-          return responsedata;
+          if(responsedata.statusCode === 400) return h.response(responsedata).code(400);
+          return responsedata
         }
       } catch (err) {
+        console.log(err);
         server.log(['error', 'home'], err);
         return err;
       }

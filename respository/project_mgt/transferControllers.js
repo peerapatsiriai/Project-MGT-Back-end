@@ -31,7 +31,6 @@ async function searchYearInOnePreproject(preproject_id) {
     console.log(fild_Curriculum_Subject_Query);
     // Fild Subject Project ID IN Curriculum
     const curriculumSubjectResult = await poolQuery(fild_Curriculum_Subject_Query);
-    // Set values
     let curriculum_id = curriculumSubjectResult[0].curriculum_id
     let preproject_Subject_id = curriculumSubjectResult[0].subject_id
     
@@ -44,7 +43,6 @@ async function searchYearInOnePreproject(preproject_id) {
     `
     console.log(fild_Project_Subject_Id_Query);
     const subject_Project_Result = await poolQuery(fild_Project_Subject_Id_Query)
-    // Set value
     const Project_subject_PK = subject_Project_Result[0].subject_id;
     
     const get_all_Year_Query = `SELECT DISTINCT sem_year FROM year_sem_sections WHERE subject_id = ${Project_subject_PK} ORDER BY sem_year`
@@ -111,12 +109,12 @@ async function transferproject(preproject_id, section_id) {
     // ตรวจสอบว่า Pre-project ที่จะโอนเป็น Projet แล้วหรือยัง
     const checkProjectQuery = `SELECT * FROM projects WHERE preproject_id = ${preproject_id}`
     const checkProject = await poolQuery(checkProjectQuery)
-    // if(checkProject.length > 0){
-    //   return {
-    //     statusCode: 400,
-    //     message: "Can't Transfer this because pre-projech have transfered",
-    //   };
-    // }
+    if(checkProject.length > 0){
+      return {
+        statusCode: 400,
+        message: "Can't Transfer this because pre-projech have transfered",
+      };
+    }
 
 
     // ย้ายข้อมูล Preproject ลงใน DB Project
