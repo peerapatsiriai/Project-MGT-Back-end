@@ -227,7 +227,8 @@ async function getAllPreprojects() {
 async function getonePreproject(preproject_id) {
   try {
 
-    const PreprojectQuery = `SELECT * FROM
+    const PreprojectQuery = `
+      SELECT * FROM
       preprojects AS pe
       INNER JOIN year_sem_sections AS sec
       ON pe.section_id = sec.section_id
@@ -242,14 +243,16 @@ async function getonePreproject(preproject_id) {
       WHERE pe.preproject_id = '${preproject_id}'
     `;
     
-    const StudentQuery = `SELECT stu2.studen_id,stu2.studen_first_name, stu2.studen_last_name, stu2.studen_number 
-                          FROM preprojects AS pre
-                          INNER JOIN preprojects_studens AS stu
-                          ON pre.preproject_id = stu.preproject_id
-                          INNER JOIN students AS stu2
-                          ON stu.studen_id = stu2.studen_id  
-                          WHERE pre.preproject_id = '${preproject_id}'     
-                          `;
+    const StudentQuery = 
+    `SELECT stu2.studen_id,stu2.studen_first_name, stu2.studen_last_name, stu2.studen_number 
+     FROM preprojects AS pre
+     INNER JOIN preprojects_studens AS stu
+     ON pre.preproject_id = stu.preproject_id
+     INNER JOIN students AS stu2
+     ON stu.studen_id = stu2.studen_id  
+     WHERE pre.preproject_id = '${preproject_id}'     
+     `;
+     
     const subadviserQuery = `SELECT ins.instructor_id,ins.instructors_name FROM preprojects AS pre
                               INNER JOIN preprojects_advisers AS advi
                               ON pre.preproject_id = advi.preproject_id AND advi.adviser_status = '2'

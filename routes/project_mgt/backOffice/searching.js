@@ -226,6 +226,7 @@ module.exports = (server) => {
     },
   });
 
+  // ส่งข้อมูลรายชื่อ Pre-project ทั้งหมดในระบบ
   server.route({
     method: 'GET',
     path: '/api/project-mgt/preproject',
@@ -255,6 +256,7 @@ module.exports = (server) => {
     },
   });
 
+  // ส่งข้อมูลปีทั้งหมดของในวิชาโปรเจคของ pre-project ที่กำลังประเปลี่ยน
   server.route({
     method: 'GET',
     path: '/api/project-mgt/getallyearsubjectproject',
@@ -284,6 +286,7 @@ module.exports = (server) => {
     },
   });
 
+  // ส่งข้อมูล sec ทั้งหมดในปีที่เลือก ของ pre-project ที่กำลังจะเปลี่ยน
   server.route({
     method: 'GET',
     path: '/api/project-mgt/getallsecinprojectsubject',

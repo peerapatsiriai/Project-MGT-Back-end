@@ -27,10 +27,10 @@ async function insertNewPreProject(
   try {
     let preproject_id;
     const insertPreprojectQuery = `INSERT INTO preprojects (section_id, preproject_name_th, preproject_name_eng, project_code, project_type, project_status, created_date_time, last_updated, created_by, is_deleted) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, 0)`;
-    const insertStudentQuery = `INSERT INTO preprojects_studens (preproject_id, studen_id) VALUES (?, ?)`;
-    const insertAdviserQuery = `INSERT INTO preprojects_advisers (preproject_id, instructor_id, adviser_status) VALUES (?, ?, "1")`;
-    const insertSubAdviserQuery = `INSERT INTO preprojects_advisers (preproject_id, instructor_id, adviser_status) VALUES (?, ?, "2")`;
-    const insertCommitteeQuery = `INSERT INTO preprojects_committees (preproject_id, instructor_id) VALUES (?, ?)`;
+    const insertStudentQuery = `INSERT INTO preprojects_studens (preproject_id, studen_id, created_date_time, last_update) VALUES (?, ?, NOW(), NOW())`;
+    const insertAdviserQuery = `INSERT INTO preprojects_advisers (preproject_id, instructor_id, adviser_status, created_date_time, last_update) VALUES (?, ?, "1", NOW(), NOW())`;
+    const insertSubAdviserQuery = `INSERT INTO preprojects_advisers (preproject_id, instructor_id, adviser_status, created_date_time, last_update) VALUES (?, ?, "2", NOW(), NOW())`;
+    const insertCommitteeQuery = `INSERT INTO preprojects_committees (preproject_id, instructor_id, created_date_time, last_update) VALUES (?, ?, NOW(), NOW())`;
 
     // Insert the new preproject and await the result
     const insertResult = await poolQuery(insertPreprojectQuery, [
@@ -181,7 +181,6 @@ async function updatePreProject(
     // pool.end();
   }
 }
-
 
 async function deletePreproject(preproject_id) {
   try {
