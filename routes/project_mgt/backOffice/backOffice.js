@@ -176,4 +176,38 @@ module.exports = (server) => {
       }
     },
   });
+
+  server.route({
+    method: 'POST',
+    path: '/api/project-mgt/uploadpreprojectdocuments',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, h) {
+      var body = request.payload;
+      const { preproject_id, document_type, document_name, document_owner } = body;
+      // return 123
+      try {
+        const responsedata = await BackOffice.backofficeRepo.saveDocument(preproject_id, document_type, document_name, document_owner)
+        if (responsedata.error) {
+          return responsedata;
+        } else {
+          if(responsedata.statusCode === 400) return h.response(responsedata).code(400);
+          return responsedata
+        }
+      } catch (err) {
+        console.log(err);
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+
 };

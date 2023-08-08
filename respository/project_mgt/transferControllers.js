@@ -170,8 +170,15 @@ async function transferproject(preproject_id, section_id) {
     `
     console.log(TransferCommitteesQuery);
     await poolQuery(TransferCommitteesQuery)
+
+
+
     // เปลี่ยนสถานะ Pre-project ให้เสร็จแล้ว
-    
+    const UpdatePreprojectStatus = `UPDATE preprojects SET project_status = 7 WHERE preproject_id = ${preproject_id}`
+    await poolQuery(UpdatePreprojectStatus);
+    console.log(UpdatePreprojectStatus);
+
+
     if (1 > 0) {
       return {
         statusCode: 200,
