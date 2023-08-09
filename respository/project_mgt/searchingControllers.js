@@ -198,7 +198,7 @@ async function getAllPreprojects() {
                    WHERE is_deleted = 0 
                    ORDER BY preproject_id DESC
                    `;
-    // console.log("Query1 is: ", Query);
+    console.log('Query1 is: ', Query);
 
     const { results } = await poolQuery(Query);
 
@@ -207,13 +207,13 @@ async function getAllPreprojects() {
         statusCode: 200,
         returnCode: 1,
         data: results,
-        message: "Sear Pre-project Success",
+        message: 'Sear Pre-project Success',
       };
     } else {
       return {
         statusCode: 404,
         returnCode: 11,
-        message: "Pre-project not found",
+        message: 'Pre-project not found',
       };
     }
   } catch (error) {
@@ -226,7 +226,6 @@ async function getAllPreprojects() {
 
 async function getonePreproject(preproject_id) {
   try {
-
     const PreprojectQuery = `
       SELECT * FROM
       preprojects AS pe
@@ -242,9 +241,8 @@ async function getonePreproject(preproject_id) {
       ON advi.instructor_id = ins.instructor_id 
       WHERE pe.preproject_id = '${preproject_id}'
     `;
-    
-    const StudentQuery = 
-    `SELECT stu2.studen_id,stu2.studen_first_name, stu2.studen_last_name, stu2.studen_number 
+
+    const StudentQuery = `SELECT stu2.studen_id,stu2.studen_first_name, stu2.studen_last_name, stu2.studen_number 
      FROM preprojects AS pre
      INNER JOIN preprojects_studens AS stu
      ON pre.preproject_id = stu.preproject_id
@@ -252,15 +250,14 @@ async function getonePreproject(preproject_id) {
      ON stu.studen_id = stu2.studen_id  
      WHERE pre.preproject_id = '${preproject_id}'     
      `;
-     
+
     const subadviserQuery = `SELECT ins.instructor_id,ins.instructors_name FROM preprojects AS pre
                               INNER JOIN preprojects_advisers AS advi
                               ON pre.preproject_id = advi.preproject_id AND advi.adviser_status = '2'
                               INNER JOIN instructors AS ins
                               ON advi.instructor_id = ins.instructor_id
                               WHERE pre.preproject_id = '${preproject_id}'
-                            `
-                              
+                            `;
 
     const committeeQuery = `SELECT ins.instructor_id,ins.instructors_name FROM preprojects AS pre
                             INNER JOIN preprojects_committees AS com
@@ -268,7 +265,7 @@ async function getonePreproject(preproject_id) {
                             INNER JOIN instructors AS ins
                             ON com.instructor_id = ins.instructor_id
                             WHERE pre.preproject_id = '${preproject_id}'
-    `
+    `;
 
     const documentQuery = `SELECT DISTINCT document_type,
                            CASE WHEN document_status > 1 THEN 'complete'
@@ -276,42 +273,56 @@ async function getonePreproject(preproject_id) {
                            END AS status
                            FROM preprojects_documents
                            WHERE preproject_id = ${preproject_id} AND document_status != 0;
-`
+`;
     // Execute both queries asynchronously
     // const [preprojectResults, studentResults, subadviserResults, committeeResult, documentResult] = await Promise.all([
-    const [preprojectResults, studentResults, subadviserResults, committeeResult, documentResult] = await Promise.all([
+    const [
+      preprojectResults,
+      studentResults,
+      subadviserResults,
+      committeeResult,
+      documentResult,
+    ] = await Promise.all([
       poolQuery(PreprojectQuery),
       poolQuery(StudentQuery),
       poolQuery(subadviserQuery),
       poolQuery(committeeQuery),
       poolQuery(documentQuery),
     ]);
-    
-    let ListDocument = { 
-      ce01:{'status':'ยังไม่ผ่าน'}, 
-      ce02:{'status':'ยังไม่ผ่าน'}, 
-      ce03:{'status':'ยังไม่ผ่าน'}, 
-      ce04:{'status':'ยังไม่ผ่าน'}, 
-      ce05:{'status':'ยังไม่ผ่าน'}, 
-      ce06:{'status':'ยังไม่ผ่าน'}
-    }
-    
+
+    let ListDocument = {
+      ce01: { status: 'ยังไม่ผ่าน' },
+      ce02: { status: 'ยังไม่ผ่าน' },
+      ce03: { status: 'ยังไม่ผ่าน' },
+      ce04: { status: 'ยังไม่ผ่าน' },
+      ce05: { status: 'ยังไม่ผ่าน' },
+      ce06: { status: 'ยังไม่ผ่าน' },
+    };
+
     // Fine Same CE document
     const separateCE = async (data) => {
-      data.forEach(element => {
+      data.forEach((element) => {
         // update status
-        if(element.status === "complete") {
-          if (element.document_type === 'CE01') { ListDocument.ce01.status = "ผ่านแล้ว" }
-          else if (element.document_type === 'CE01') { ListDocument.ce01.status = "ผ่านแล้ว" }
-          else if (element.document_type === 'CE02') { ListDocument.ce02.status = "ผ่านแล้ว" }
-          else if (element.document_type === 'CE03-4-G') { ListDocument.ce03.status = "ผ่านแล้ว" }
-          else if (element.document_type === 'CE04') { ListDocument.ce04.status = "ผ่านแล้ว" }
-          else if (element.document_type === 'CE05') { ListDocument.ce05.status = "ผ่านแล้ว" }
-          else if (element.document_type === 'CE06') { ListDocument.ce06.status = "ผ่านแล้ว" }
+        if (element.status === 'complete') {
+          if (element.document_type === 'CE01') {
+            ListDocument.ce01.status = 'ผ่านแล้ว';
+          } else if (element.document_type === 'CE01') {
+            ListDocument.ce01.status = 'ผ่านแล้ว';
+          } else if (element.document_type === 'CE02') {
+            ListDocument.ce02.status = 'ผ่านแล้ว';
+          } else if (element.document_type === 'CE03-4-G') {
+            ListDocument.ce03.status = 'ผ่านแล้ว';
+          } else if (element.document_type === 'CE04') {
+            ListDocument.ce04.status = 'ผ่านแล้ว';
+          } else if (element.document_type === 'CE05') {
+            ListDocument.ce05.status = 'ผ่านแล้ว';
+          } else if (element.document_type === 'CE06') {
+            ListDocument.ce06.status = 'ผ่านแล้ว';
+          }
         }
       });
-    }
-    separateCE(documentResult.results)
+    };
+    separateCE(documentResult.results);
 
     if (preprojectResults.results.length > 0) {
       return {
@@ -322,13 +333,13 @@ async function getonePreproject(preproject_id) {
         PreprojectStudent: studentResults.results,
         PreprojectCommittee: committeeResult.results,
         PreprojectDocument: ListDocument,
-        message: "SearchPre-project Success",
+        message: 'SearchPre-project Success',
       };
     } else {
       return {
         statusCode: 404,
         returnCode: 11,
-        message: "Pre-project not found",
+        message: 'Pre-project not found',
       };
     }
   } catch (error) {
@@ -339,6 +350,75 @@ async function getonePreproject(preproject_id) {
   }
 }
 
+async function getListInOneDocuments(preproject_id, document_type) {
+  try {
+    const QueryDocumentList = `SELECT * FROM 
+                   preprojects_documents
+                   WHERE preproject_id = ${preproject_id} AND document_type = '${document_type}'
+                   AND document_status != 0 
+                   ORDER BY created_date_time DESC
+                   `;
+
+    const StudentQuery = `SELECT stu2.studen_id,stu2.studen_first_name, stu2.studen_last_name, stu2.studen_number 
+     FROM preprojects AS pre
+     INNER JOIN preprojects_studens AS stu
+     ON pre.preproject_id = stu.preproject_id
+     INNER JOIN students AS stu2
+     ON stu.studen_id = stu2.studen_id  
+     WHERE pre.preproject_id = '${preproject_id}'     
+     `;
+
+    const adviserQuery = `SELECT ins.instructor_id,ins.instructors_name FROM preprojects AS pre
+                              INNER JOIN preprojects_advisers AS advi
+                              ON pre.preproject_id = advi.preproject_id
+                              INNER JOIN instructors AS ins
+                              ON advi.instructor_id = ins.instructor_id
+                              WHERE pre.preproject_id = '${preproject_id}'
+                            `;
+
+    const committeeQuery = `SELECT ins.instructor_id,ins.instructors_name FROM preprojects AS pre
+                            INNER JOIN preprojects_committees AS com
+                            ON pre.preproject_id = com.preproject_id
+                            INNER JOIN instructors AS ins
+                            ON com.instructor_id = ins.instructor_id
+                            WHERE pre.preproject_id = '${preproject_id}'
+    `;
+    console.log('Query is: ', QueryDocumentList);
+    const { results } = await poolQuery(QueryDocumentList);
+
+    const students = await poolQuery(StudentQuery);
+    const adviser = await poolQuery(adviserQuery);
+    const committee = await poolQuery(committeeQuery);
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        returnCode: 1,
+        documentList: results,
+        index: results.length,
+        students: students.results,
+        adviser: adviser.results,
+        committee: committee.results,
+        message: 'Search Document Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        returnCode: 11,
+        index: 0,
+        students: students.results,
+        adviser: adviser.results,
+        committee: committee.results,
+        message: 'Document not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
 
 module.exports.searchingRepo = {
   getAllCurriculums: getAllCurriculums,
@@ -349,4 +429,5 @@ module.exports.searchingRepo = {
   getAllListStudents: getAllListStudents,
   getAllPreprojects: getAllPreprojects,
   getonePreproject: getonePreproject,
+  getListInOneDocuments: getListInOneDocuments,
 };

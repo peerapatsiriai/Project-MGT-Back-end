@@ -315,4 +315,34 @@ module.exports = (server) => {
       }
     },
   });
+
+  //ค้าหาหนึ่งประเภทเอกสารของหนึ่งโปรเจค
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/getallonedocumenttype',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var param = request.query;
+      const { preproject_id, document_type } = param;
+      try {
+        const responsedata = await searching.searchingRepo.getListInOneDocuments(preproject_id, document_type);
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
 };
