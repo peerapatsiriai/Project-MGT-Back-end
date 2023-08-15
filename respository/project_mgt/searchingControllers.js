@@ -418,7 +418,7 @@ async function getListInOneDocuments(preproject_id, document_type) {
 
 async function getAllProjects() {
   try {
-    const Query = `SELECT * FROM projects AS pe INNER JOIN year_sem_sections AS sec ON pe.section_id = sec.section_id
+    const Query = `SELECT * FROM projects AS pro INNER JOIN year_sem_sections AS sec ON pro.section_id = sec.section_id
                    INNER JOIN subjects AS sub ON sec.subject_id = sub.subject_id
                    INNER JOIN curriculums AS cur ON sub.curriculum_id = cur.curriculum_id
                    WHERE is_deleted = 0 ORDER BY project_id DESC

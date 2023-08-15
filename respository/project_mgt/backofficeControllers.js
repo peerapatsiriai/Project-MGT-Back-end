@@ -249,9 +249,45 @@ async function saveDocument(preproject_id, document_type, document_name, documen
   }
 }
 
+async function deleteProject( project_id ) {
+
+  try {
+
+    const updateStatusQuery = `UPDATE projects SET is_deleted = 1 WHERE project_id = ?`;
+    const findPrimarykeyOfPreproject = `SELECT preproject_id FROM projects WHERE project_id = ?`
+    const updateStatusPreproject = `UPDATE preprojects SET project_status = 6 WHERE preproject_id = ?`
+    // Update the preproject status and await the result
+    await poolQuery(updateStatusQuery, [project_id]);
+    console.log(updateStatusQuery);
+
+
+    const findPKResult = await poolQuery(findPrimarykeyOfPreproject,[project_id]);
+    console.log(findPrimarykeyOfPreproject);
+    const preProjectPK = findPKResult[0].preproject_id
+
+
+    await poolQuery(updateStatusPreproject,[preProjectPK])
+    console.log(updateStatusPreproject);
+    // Return success
+    return {
+      statusCode: 200,
+      returnCode: 0,
+      message: 'Deleted Success',
+    };
+  } catch (error) {
+    console.error('Error:', error);
+    return {
+      statusCode: 500,
+      returnCode: 11,
+      message: 'Server Error',
+    };
+  }
+}
+
 module.exports.backofficeRepo = {
   insertNewPreProject: insertNewPreProject,
   updatePreProject: updatePreProject,
   deletePreproject: deletePreproject,
-  saveDocument:saveDocument
+  saveDocument:saveDocument,
+  deleteProject:deleteProject
 };

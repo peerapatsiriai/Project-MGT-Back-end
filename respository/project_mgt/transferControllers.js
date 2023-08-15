@@ -107,7 +107,7 @@ async function transferproject(preproject_id, section_id) {
 
 
     // ตรวจสอบว่า Pre-project ที่จะโอนเป็น Projet แล้วหรือยัง
-    const checkProjectQuery = `SELECT * FROM projects WHERE preproject_id = ${preproject_id}`
+    const checkProjectQuery = `SELECT * FROM projects WHERE preproject_id = ${preproject_id} AND is_deleted = 0`
     const checkProject = await poolQuery(checkProjectQuery)
     if(checkProject.length > 0){
       return {

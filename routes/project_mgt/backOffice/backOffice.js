@@ -181,6 +181,7 @@ module.exports = (server) => {
     },
   });
 
+  // บันทึกเอกสาร
   server.route({
     method: 'POST',
     path: '/api/project-mgt/uploadpreprojectdocuments',
@@ -234,6 +235,36 @@ module.exports = (server) => {
         }
       } catch (err) {
         console.log(err);
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+  // ลบข้อมูลเปลี่ยนสถานะของ Project ที่เลือก
+  server.route({
+    method: 'PUT',
+    path: '/api/project-mgt/deleteproject',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var body = request.payload;
+      const { project_id } = body;
+      try {
+        const responsedata = await BackOffice.backofficeRepo.deleteProject(project_id)
+        if (responsedata.error) {
+          return responsedata;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
         server.log(['error', 'home'], err);
         return err;
       }
