@@ -162,12 +162,16 @@ module.exports = (server) => {
       var body = request.payload;
       const { preproject_id, section_id } = body;
       try {
-        const responsedata = await Transfer.transferRepo.transferproject(preproject_id, section_id);
+        const responsedata = await Transfer.transferRepo.transferproject(
+          preproject_id,
+          section_id
+        );
         if (responsedata.error) {
           return responsedata;
         } else {
-          if(responsedata.statusCode === 400) return h.response(responsedata).code(400);
-          return responsedata
+          if (responsedata.statusCode === 400)
+            return h.response(responsedata).code(400);
+          return responsedata;
         }
       } catch (err) {
         console.log(err);
@@ -191,15 +195,42 @@ module.exports = (server) => {
     },
     handler: async function (request, h) {
       var body = request.payload;
-      const { preproject_id, document_type, document_name, document_owner } = body;
+      const {
+        preproject_id,
+        document_type,
+        document_name,
+        adviser,
+        studen_id,
+        instructor,
+        committee,
+        role,
+        description
+      } = body;
       // return 123
+      let document_owner;
+
+      if (adviser !== '') document_owner = adviser;
+      else if (studen_id !== '') document_owner = studen_id;
+      else if (instructor !== '') document_owner = instructor;
+      else if (committee !== '') document_owner = committee;
+      else document_owner = 0;
+
       try {
-        const responsedata = await BackOffice.backofficeRepo.saveDocument(preproject_id, document_type, document_name, document_owner)
+
+        const responsedata = await BackOffice.backofficeRepo.saveDocument(
+          preproject_id,
+          document_type,
+          document_name,
+          document_owner,
+          role,
+          description
+        );
         if (responsedata.error) {
           return responsedata;
         } else {
-          if(responsedata.statusCode === 400) return h.response(responsedata).code(400);
-          return responsedata
+          if (responsedata.statusCode === 400)
+            return h.response(responsedata).code(400);
+          return responsedata;
         }
       } catch (err) {
         console.log(err);
@@ -208,6 +239,4 @@ module.exports = (server) => {
       }
     },
   });
-
-
 };

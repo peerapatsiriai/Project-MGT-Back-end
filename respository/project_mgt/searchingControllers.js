@@ -44,7 +44,7 @@ async function getAllCurriculums() {
 
 async function getAllSubjectInCurriculums(curriculum_id) {
   try {
-    const Query = `SELECT * FROM subjects WHERE curriculum_id = ${curriculum_id}`;
+    const Query = `SELECT * FROM subjects WHERE curriculum_id = ${curriculum_id} AND subject_type = 1`;
     console.log('Query is: ', Query);
 
     const { results } = await poolQuery(Query);
@@ -187,16 +187,10 @@ async function getAllListStudents() {
 
 async function getAllPreprojects() {
   try {
-    const Query = `SELECT * FROM 
-                   preprojects AS pe 
-                   INNER JOIN year_sem_sections AS sec 
-                   ON pe.section_id = sec.section_id
-                   INNER JOIN subjects AS sub
-                   ON sec.subject_id = sub.subject_id
-                   INNER JOIN curriculums AS cur
-                   ON sub.curriculum_id = cur.curriculum_id
-                   WHERE is_deleted = 0 
-                   ORDER BY preproject_id DESC
+    const Query = `SELECT * FROM preprojects AS pe INNER JOIN year_sem_sections AS sec ON pe.section_id = sec.section_id
+                   INNER JOIN subjects AS sub ON sec.subject_id = sub.subject_id
+                   INNER JOIN curriculums AS cur ON sub.curriculum_id = cur.curriculum_id
+                   WHERE pe.is_deleted = 0 ORDER BY preproject_id DESC
                    `;
     console.log('Query1 is: ', Query);
 
@@ -353,11 +347,11 @@ async function getonePreproject(preproject_id) {
 async function getListInOneDocuments(preproject_id, document_type) {
   try {
     const QueryDocumentList = `SELECT * FROM 
-                   preprojects_documents
-                   WHERE preproject_id = ${preproject_id} AND document_type = '${document_type}'
-                   AND document_status != 0 
-                   ORDER BY created_date_time DESC
-                   `;
+                                preprojects_documents
+                                WHERE preproject_id = ${preproject_id} AND document_type = '${document_type}'
+                                AND document_status != 0 
+                                ORDER BY created_date_time DESC
+                                `;
 
     const StudentQuery = `SELECT stu2.studen_id,stu2.studen_first_name, stu2.studen_last_name, stu2.studen_number 
      FROM preprojects AS pre
@@ -420,6 +414,41 @@ async function getListInOneDocuments(preproject_id, document_type) {
   }
 }
 
+/// Project 
+
+async function getAllProjects() {
+  try {
+    const Query = `SELECT * FROM projects AS pe INNER JOIN year_sem_sections AS sec ON pe.section_id = sec.section_id
+                   INNER JOIN subjects AS sub ON sec.subject_id = sub.subject_id
+                   INNER JOIN curriculums AS cur ON sub.curriculum_id = cur.curriculum_id
+                   WHERE is_deleted = 0 ORDER BY project_id DESC
+                   `;
+    console.log('Query1 is: ', Query);
+
+    const { results } = await poolQuery(Query);
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        returnCode: 1,
+        data: results,
+        message: 'Sear Pre-project Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        returnCode: 11,
+        message: 'Project not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
+
 module.exports.searchingRepo = {
   getAllCurriculums: getAllCurriculums,
   getAllSubjectInCurriculums: getAllSubjectInCurriculums,
@@ -430,4 +459,5 @@ module.exports.searchingRepo = {
   getAllPreprojects: getAllPreprojects,
   getonePreproject: getonePreproject,
   getListInOneDocuments: getListInOneDocuments,
+  getAllProjects:getAllProjects
 };

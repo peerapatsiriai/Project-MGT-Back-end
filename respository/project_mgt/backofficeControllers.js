@@ -220,15 +220,15 @@ async function deletePreproject(preproject_id) {
 }
 
 // upload document
-async function saveDocument(preproject_id, document_type, document_name, document_owner) {
+async function saveDocument(preproject_id, document_type, document_name, document_owner, document_role, description) {
 
   try {
 
     const uploadDocumentQuery = 
     `
       INSERT INTO preprojects_documents 
-      (preproject_id, document_type, document_name, document_owner ,document_status, created_date_time, created_by)
-      VALUES (${preproject_id} ,'${document_type}' ,"${document_name}" ,${document_owner} ,1 ,NOW() ,NOW()) 
+      (preproject_id, document_type, document_name, document_owner, document_role, document_description ,document_status, created_date_time, created_by)
+      VALUES (${preproject_id} ,'${document_type}' ,"${document_name}" ,'${document_owner}', '${document_role}', '${description}' ,1 ,NOW() ,NOW()) 
     `
     await poolQuery(uploadDocumentQuery)
     console.log(uploadDocumentQuery);

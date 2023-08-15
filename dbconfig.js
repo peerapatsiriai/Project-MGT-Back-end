@@ -6,6 +6,7 @@ var dbconfig = {
         user: 'root',
         password: '',
         database: 'project_mgt'
+        //database: 'ce_project_mgt'
     },
     Dev_online: {
         host: "sql6.freesqldatabase.com",

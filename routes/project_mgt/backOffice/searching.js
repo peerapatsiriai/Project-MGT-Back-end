@@ -345,4 +345,32 @@ module.exports = (server) => {
       }
     },
   });
+
+  // All Project
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/getallprojects',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      try {
+        const responsedata = await searching.searchingRepo.getAllProjects();
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
 };
