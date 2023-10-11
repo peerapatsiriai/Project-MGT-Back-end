@@ -6,6 +6,7 @@ const FormData = require("form-data");
 // ------------------- Routes ------------------- //
 const Project_mgt_route_backoffice = require("./routes/project_mgt/backOffice/backOffice");
 const Project_mgt_route_searching = require("./routes/project_mgt/backOffice/searching");
+const Project_mgt_route_authen = require("./routes/project_mgt/backOffice/authen");
 
 // ------------------ Websocket ----------------- //
 const hapiPort = 3200;
@@ -23,6 +24,7 @@ const init = async () => {
   // Replace this part with your actual route handlers
   Project_mgt_route_backoffice(server);
   Project_mgt_route_searching(server);
+  Project_mgt_route_authen(server);
   // ...
 
   // Greeting API

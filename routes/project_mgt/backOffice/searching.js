@@ -373,4 +373,34 @@ module.exports = (server) => {
       }
     },
   });
+
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/project',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var param = request.query;
+      const { project_id } = param;
+      try {
+        const responsedata = await searching.searchingRepo.getoneProjects(project_id);
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
 };

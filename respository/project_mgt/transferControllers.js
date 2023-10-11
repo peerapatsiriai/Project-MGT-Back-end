@@ -131,7 +131,7 @@ async function transferproject(preproject_id, section_id) {
     // รับค่า PK ข้อ New Project ที่บันทึก
     const FildPrimarykeyOfNewProjectQuery = 
     `
-      SELECT project_id FROM projects WHERE preproject_id = ${preproject_id} 
+      SELECT project_id FROM projects WHERE preproject_id = ${preproject_id} AND is_deleted != '1'
     `
     console.log(FildPrimarykeyOfNewProjectQuery);
     const FildProjectResult = await poolQuery(FildPrimarykeyOfNewProjectQuery)
