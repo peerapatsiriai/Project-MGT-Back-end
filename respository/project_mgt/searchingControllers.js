@@ -498,7 +498,7 @@ async function getoneProjects(project_id) {
                            ELSE 'not pass'
                            END AS status
                            FROM preprojects_documents
-                           WHERE preproject_id = 1 AND document_status != 0;
+                           WHERE preproject_id = 1 AND document_status != 0 AND project_id = '${project_id}';
 `;
     // Execute both queries asynchronously
     // const [preprojectResults, studentResults, subadviserResults, committeeResult, documentResult] = await Promise.all([
