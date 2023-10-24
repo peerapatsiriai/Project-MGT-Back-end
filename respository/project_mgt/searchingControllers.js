@@ -247,7 +247,7 @@ async function getonePreproject(preproject_id) {
      WHERE pre.preproject_id = '${preproject_id}'     
      `;
 
-    const subadviserQuery = `SELECT ins.tea_id ,ins.tea_name FROM preprojects AS pre
+    const subadviserQuery = `SELECT ins.tea_id ,ins.tea_name, ins.tea_lname FROM preprojects AS pre
                               INNER JOIN preprojects_advisers AS advi
                               ON pre.preproject_id = advi.preproject_id AND advi.adviser_status = '2'
                               INNER JOIN teacher AS ins
@@ -255,7 +255,7 @@ async function getonePreproject(preproject_id) {
                               WHERE pre.preproject_id = '${preproject_id}'
                             `;
 
-    const committeeQuery = `SELECT ins.tea_id,ins.tea_name, tea_lname FROM preprojects AS pre
+    const committeeQuery = `SELECT ins.tea_id,ins.tea_name, tea_lname, ins.tea_lname FROM preprojects AS pre
                             INNER JOIN preprojects_committees AS com
                             ON pre.preproject_id = com.preproject_id
                             INNER JOIN teacher AS ins
