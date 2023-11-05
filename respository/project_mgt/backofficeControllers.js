@@ -219,7 +219,7 @@ async function deletePreproject(preproject_id) {
   }
 }
 
-// upload document
+// upload document preproject
 async function saveDocument(preproject_id, document_type, document_name, document_owner, document_role, description) {
 
   try {
@@ -249,13 +249,43 @@ async function saveDocument(preproject_id, document_type, document_name, documen
   }
 }
 
+// upload document preproject
+async function saveDocumentProject(project_id, document_type, document_name) {
+
+  try {
+
+    const uploadDocumentQuery = 
+    `
+      INSERT INTO projects_documents 
+      (project_id, document_type, document_name, document_status, created_date_time, created_by)
+      VALUES (${project_id} ,'${document_type}' ,"${document_name}" ,1 ,NOW() ,NOW()) 
+    `
+    await poolQuery(uploadDocumentQuery)
+    console.log(uploadDocumentQuery);
+    
+    // Return success
+    return {
+      statusCode: 200,
+      returnCode: 0,
+      message: 'Success',
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      statusCode: 500,
+      returnCode: 11,
+      message: 'Server Error',
+    };
+  }
+}
+
 async function deleteProject( project_id ) {
 
   try {
 
     const updateStatusQuery = `UPDATE projects SET is_deleted = 1 WHERE project_id = ?`;
     const findPrimarykeyOfPreproject = `SELECT preproject_id FROM projects WHERE project_id = ?`
-    const updateStatusPreproject = `UPDATE preprojects SET project_status = 6 WHERE preproject_id = ?`
+    const updateStatusPreproject = `UPDATE preprojects SET project_status = 5 WHERE preproject_id = ?`
     // Update the preproject status and await the result
     await poolQuery(updateStatusQuery, [project_id]);
     console.log(updateStatusQuery);
@@ -284,10 +314,103 @@ async function deleteProject( project_id ) {
   }
 }
 
+
+async function updateProject(
+  project_id,
+  section_id,
+  project_name_th,
+  project_name_eng,
+  project_code,
+  project_status,
+  project_type,
+  studen_id,
+  adviser,
+  subadviser,
+  committee
+) {
+  try {
+    console.log(1150);
+    const updatePreprojectQuery = `UPDATE projects SET section_id = ?, project_name_th = ?, project_name_eng = ?, project_code = ?, project_status = ?, last_updated = NOW() WHERE project_id = ?`;
+
+    // Update the preproject and await the result
+    await poolQuery(updatePreprojectQuery, [
+      section_id,
+      project_name_th,
+      project_name_eng,
+      project_code,
+      // project_type,
+      project_status,
+      project_id,
+    ]);
+
+    // Clear data in relation of project
+    const clearStudenQuery = `DELETE FROM projects_students WHERE project_id = ${project_id}`;
+    const clearAdviserQuery = `DELETE FROM projects_advisers WHERE project_id = ${project_id}`;
+    const clearCommitteeQuery = `DELETE FROM projects_committees WHERE project_id = ${project_id}`;
+    // Insert New Data of project
+    const insertStudentQuery = `INSERT INTO projects_students (project_id, studen_id, created_date_time, last_update) VALUES (?, ?, NOW(), NOW() )`;
+    const insertAdviserQuery = `INSERT INTO projects_advisers (project_id, instructor_id, adviser_status, created_date_time, last_update) VALUES (?, ?, "1", NOW(), NOW())`;
+    const insertSubAdviserQuery = `INSERT INTO projects_advisers (project_id, instructor_id, adviser_status, created_date_time, last_update) VALUES (?, ?, "2", NOW(), NOW())`;
+    const insertCommitteeQuery = `INSERT INTO projects_committees (project_id, instructor_id, created_date_time, last_update) VALUES (?, ?, NOW(), NOW())`;
+
+    await poolQuery(clearStudenQuery);
+    await poolQuery(clearAdviserQuery);
+    await poolQuery(clearCommitteeQuery);
+
+    // Insert the students Preproject
+    for (let student of studen_id) {
+      await poolQuery(insertStudentQuery, [project_id, student]);
+      console.log('Query is: ', insertStudentQuery, [project_id, student]);
+    }
+
+    // insert the adviser
+    await poolQuery(insertAdviserQuery, [project_id, adviser]);
+    console.log('Query is: ', insertAdviserQuery, [project_id, adviser]);
+
+    if (subadviser.length > 0) {
+      for (let subadviserid of subadviser) {
+        await poolQuery(insertSubAdviserQuery, [project_id, subadviserid]);
+        console.log('Query is: ', insertSubAdviserQuery, [
+          project_id,
+          subadviserid,
+        ]);
+      }
+    }
+
+    for (let committeeid of committee) {
+      await poolQuery(insertCommitteeQuery, [project_id, committeeid]);
+      console.log('Query is: ', insertCommitteeQuery, [
+        project_id,
+        committeeid,
+      ]);
+    }
+
+    // Return success
+    return {
+      statusCode: 200,
+      returnCode: 0,
+      message: 'Success',
+      preproject_id: project_id,
+    };
+  } catch (error) {
+    console.error('Error:', error);
+    return {
+      statusCode: 500,
+      returnCode: 11,
+      message: 'Server Error',
+    };
+  } finally {
+    // Make sure to release the pool connection when done
+    // pool.end();
+  }
+}
+
 module.exports.backofficeRepo = {
   insertNewPreProject: insertNewPreProject,
   updatePreProject: updatePreProject,
   deletePreproject: deletePreproject,
   saveDocument:saveDocument,
-  deleteProject:deleteProject
+  deleteProject:deleteProject,
+  saveDocumentProject: saveDocumentProject,
+  updateProject: updateProject
 };

@@ -174,7 +174,7 @@ async function transferproject(preproject_id, section_id) {
 
 
     // เปลี่ยนสถานะ Pre-project ให้เสร็จแล้ว
-    const UpdatePreprojectStatus = `UPDATE preprojects SET project_status = 7 WHERE preproject_id = ${preproject_id}`
+    const UpdatePreprojectStatus = `UPDATE preprojects SET project_status = 6 WHERE preproject_id = ${preproject_id}`
     await poolQuery(UpdatePreprojectStatus);
     console.log(UpdatePreprojectStatus);
 

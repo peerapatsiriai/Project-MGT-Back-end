@@ -241,6 +241,104 @@ module.exports = (server) => {
     },
   });
 
+  // อัปโหลดเอกสาร project
+  server.route({
+    method: 'POST',
+    path: '/api/project-mgt/uploadprojectdocuments',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, h) {
+      var body = request.payload;
+      const {
+        project_id,
+        document_type,
+        document_name,
+      } = body;
+
+      try {
+
+        const responsedata = await BackOffice.backofficeRepo.saveDocumentProject(
+          project_id,
+          document_type,
+          document_name
+        );
+        if (responsedata.error) {
+          return responsedata;
+        } else {
+          if (responsedata.statusCode === 400)
+            return h.response(responsedata).code(400);
+          return responsedata;
+        }
+      } catch (err) {
+        console.log(err);
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+  // อัปเดทของมูล Project ที่เลือก
+  server.route({
+    method: 'POST',
+    path: '/api/project-mgt/updateproject',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var body = request.payload;
+      const {
+        project_id,
+        section_id,
+        project_name_th,
+        project_name_eng,
+        project_code,
+        project_status,
+        project_type,
+        studen_id,
+        adviser,
+        subadviser,
+        committee,
+      } = body;
+      try {
+        const responsedata = await BackOffice.backofficeRepo.updateProject(
+          project_id,
+          section_id,
+          project_name_th,
+          project_name_eng,
+          project_code,
+          project_status,
+          project_type,
+          studen_id,
+          adviser,
+          subadviser,
+          committee
+        );
+        if (responsedata.error) {
+          return responsedata;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+
   // ลบข้อมูลเปลี่ยนสถานะของ Project ที่เลือก
   server.route({
     method: 'PUT',

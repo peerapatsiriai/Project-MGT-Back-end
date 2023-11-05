@@ -287,12 +287,12 @@ async function getonePreproject(preproject_id) {
     ]);
 
     let ListDocument = {
-      ce01: { status: 'ยังไม่ผ่าน' },
-      ce02: { status: 'ยังไม่ผ่าน' },
-      ce03: { status: 'ยังไม่ผ่าน' },
-      ce04: { status: 'ยังไม่ผ่าน' },
-      ce05: { status: 'ยังไม่ผ่าน' },
-      ce06: { status: 'ยังไม่ผ่าน' },
+      ce01: { status: 'Not pass' },
+      ce02: { status: 'Not pass' },
+      ce03: { status: 'Not pass' },
+      ce04: { status: 'Not pass' },
+      ce05: { status: 'Not pass' },
+      ce06: { status: 'Not pass' },
     };
 
     // Fine Same CE document
@@ -301,19 +301,19 @@ async function getonePreproject(preproject_id) {
         // update status
         if (element.status === 'complete') {
           if (element.document_type === 'CE01') {
-            ListDocument.ce01.status = 'ผ่านแล้ว';
+            ListDocument.ce01.status = 'Pass';
           } else if (element.document_type === 'CE01') {
-            ListDocument.ce01.status = 'ผ่านแล้ว';
+            ListDocument.ce01.status = 'Pass';
           } else if (element.document_type === 'CE02') {
-            ListDocument.ce02.status = 'ผ่านแล้ว';
+            ListDocument.ce02.status = 'Pass';
           } else if (element.document_type === 'CE03-4-G') {
-            ListDocument.ce03.status = 'ผ่านแล้ว';
+            ListDocument.ce03.status = 'Pass';
           } else if (element.document_type === 'CE04') {
-            ListDocument.ce04.status = 'ผ่านแล้ว';
+            ListDocument.ce04.status = 'Pass';
           } else if (element.document_type === 'CE05') {
-            ListDocument.ce05.status = 'ผ่านแล้ว';
+            ListDocument.ce05.status = 'Pass';
           } else if (element.document_type === 'CE06') {
-            ListDocument.ce06.status = 'ผ่านแล้ว';
+            ListDocument.ce06.status = 'Pass';
           }
         }
       });
@@ -346,6 +346,7 @@ async function getonePreproject(preproject_id) {
   }
 }
 
+// preproject
 async function getListInOneDocuments(preproject_id, document_type) {
   try {
     const QueryDocumentList = `SELECT * FROM 
@@ -419,10 +420,12 @@ async function getListInOneDocuments(preproject_id, document_type) {
  
 async function getAllProjects() {
   try {
-    const Query = `SELECT * FROM projects AS pro INNER JOIN year_sem_sections AS sec ON pro.section_id = sec.section_id
+    const Query = `SELECT * FROM projects AS pro 
+                   INNER JOIN year_sem_sections AS sec ON pro.section_id = sec.section_id
                    INNER JOIN project_mgt_subjects AS sub ON sec.subject_id = sub.subject_id
                    INNER JOIN curriculum AS cur ON sub.curriculum_id = cur.curriculum_id
-                   WHERE is_deleted = 0 ORDER BY project_id DESC
+                   INNER JOIN preprojects AS pre ON pre.preproject_id = pro.preproject_id
+                   WHERE pro.is_deleted = 0 ORDER BY pro.project_id DESC
                    `;
     console.log('Query1 is: ', Query);
 
@@ -464,7 +467,9 @@ async function getoneProjects(project_id) {
       INNER JOIN projects_advisers AS advi
       ON pro.project_id = advi.project_id AND advi.adviser_status = '1'
       INNER JOIN teacher AS ins
-      ON advi.instructor_id = ins.tea_id 
+      ON advi.instructor_id = ins.tea_id
+      INNER JOIN preprojects AS pre
+      ON pre.preproject_id = pro.preproject_id
       WHERE pro.project_id = '${project_id}' 
     `;
 
@@ -497,8 +502,8 @@ async function getoneProjects(project_id) {
                            CASE WHEN document_status > 1 THEN 'complete'
                            ELSE 'not pass'
                            END AS status
-                           FROM preprojects_documents
-                           WHERE preproject_id = 1 AND document_status != 0 AND project_id = '${project_id}';
+                           FROM projects_documents
+                           WHERE project_id = '${project_id}' AND document_status != 0;
 `;
     // Execute both queries asynchronously
     // const [preprojectResults, studentResults, subadviserResults, committeeResult, documentResult] = await Promise.all([
@@ -517,12 +522,12 @@ async function getoneProjects(project_id) {
     ]);
 
     let ListDocument = {
-      ce01: { status: 'ยังไม่ผ่าน' },
-      ce02: { status: 'ยังไม่ผ่าน' },
-      ce03: { status: 'ยังไม่ผ่าน' },
-      ce04: { status: 'ยังไม่ผ่าน' },
-      ce05: { status: 'ยังไม่ผ่าน' },
-      ce06: { status: 'ยังไม่ผ่าน' },
+      ce01: { status: 'Not Pass' },
+      ce02: { status: 'Not Pass' },
+      ce03: { status: 'Not Pass' },
+      ce04: { status: 'Not Pass' },
+      ce05: { status: 'Not Pass' },
+      ce06: { status: 'Not Pass' },
     };
 
     // Fine Same CE document
@@ -530,26 +535,24 @@ async function getoneProjects(project_id) {
       data.forEach((element) => {
         // update status
         if (element.status === 'complete') {
-          if (element.document_type === 'CE01') {
-            ListDocument.ce01.status = 'ผ่านแล้ว';
-          } else if (element.document_type === 'CE01') {
-            ListDocument.ce01.status = 'ผ่านแล้ว';
-          } else if (element.document_type === 'CE02') {
-            ListDocument.ce02.status = 'ผ่านแล้ว';
-          } else if (element.document_type === 'CE03-4-G') {
-            ListDocument.ce03.status = 'ผ่านแล้ว';
-          } else if (element.document_type === 'CE04') {
-            ListDocument.ce04.status = 'ผ่านแล้ว';
-          } else if (element.document_type === 'CE05') {
-            ListDocument.ce05.status = 'ผ่านแล้ว';
-          } else if (element.document_type === 'CE06') {
-            ListDocument.ce06.status = 'ผ่านแล้ว';
+          if (element.document_type === 'บทที่1') {
+            ListDocument.ce01.status = 'Pass';
+          } else if (element.document_type === 'บทที่2') {
+            ListDocument.ce01.status = 'Pass';
+          } else if (element.document_type === 'บทที่3') {
+            ListDocument.ce03.status = 'Pass';
+          } else if (element.document_type === 'บทที่4') {
+            ListDocument.ce04.status = 'Pass';
+          } else if (element.document_type === 'บทที่5') {
+            ListDocument.ce05.status = 'Pass';
+          } else if (element.document_type === 'บทที่6') {
+            ListDocument.ce06.status = 'Pass';
           }
         }
       });
     };
     separateCE(documentResult.results);
-
+    console.log(ListDocument)
     if (projectResults.results.length > 0) {
       return {
         statusCode: 200,
@@ -576,6 +579,47 @@ async function getoneProjects(project_id) {
   }
 }
 
+// project
+async function getListInOneDocumentsProject(project_id, document_type) {
+  try {
+    const QueryDocumentList = `SELECT * FROM 
+                                projects_documents
+                                WHERE project_id = ${project_id} AND document_type = '${document_type}'
+                                AND document_status != 0 
+                                ORDER BY created_date_time DESC
+                                `;
+
+    console.log('Query is: ', QueryDocumentList);
+    const { results } = await poolQuery(QueryDocumentList);
+
+
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        returnCode: 1,
+        documentList: results,
+        index: results.length,
+        message: 'Search Document Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        returnCode: 11,
+        index: 0,
+        message: 'Document not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
+
+
+
 module.exports.searchingRepo = {
   getAllCurriculums: getAllCurriculums,
   getAllSubjectInCurriculums: getAllSubjectInCurriculums,
@@ -587,5 +631,6 @@ module.exports.searchingRepo = {
   getonePreproject: getonePreproject,
   getListInOneDocuments: getListInOneDocuments,
   getAllProjects:getAllProjects,
-  getoneProjects:getoneProjects
+  getoneProjects:getoneProjects,
+  getListInOneDocumentsProject:getListInOneDocumentsProject
 };
