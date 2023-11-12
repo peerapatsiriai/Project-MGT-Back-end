@@ -296,10 +296,10 @@ async function deleteProject( project_id ) {
 
     const findPKResult = await poolQuery(findPrimarykeyOfPreproject,[project_id]);
     console.log(findPrimarykeyOfPreproject);
-    const preProjectPK = findPKResult[0].preproject_id
+    const ProjectPK = findPKResult[0].project_id
 
 
-    await poolQuery(updateStatusPreproject,[preProjectPK])
+    await poolQuery(updateStatusPreproject,[ProjectPK])
     console.log(updateStatusPreproject);
     // Return success
     return {

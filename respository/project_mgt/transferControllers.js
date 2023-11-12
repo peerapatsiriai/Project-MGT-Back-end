@@ -24,7 +24,7 @@ async function searchYearInOnePreproject(preproject_id) {
     ON pre.section_id = sec.section_id
     INNER JOIN project_mgt_subjects AS sub
     ON sub.subject_id = sec.subject_id
-    INNER JOIN curriculum AS cur
+    INNER JOIN curriculums AS cur
     ON cur.curriculum_id = sub.curriculum_id
     WHERE pre.preproject_id = ${preproject_id};
     `;
@@ -36,7 +36,7 @@ async function searchYearInOnePreproject(preproject_id) {
     
     const fild_Project_Subject_Id_Query = `
     SELECT DISTINCT sub.subject_id
-    FROM curriculum AS cur
+    FROM curriculums AS cur
     INNER JOIN project_mgt_subjects AS sub
     ON cur.curriculum_id = sub.curriculum_id
     WHERE cur.curriculum_id = ${curriculum_id} AND sub.subject_id != ${preproject_Subject_id};

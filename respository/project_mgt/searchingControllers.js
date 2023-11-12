@@ -18,7 +18,7 @@ const poolQuery = (query) => {
 
 async function getAllCurriculums() {
   try {
-    const Query = `SELECT * FROM curriculum`;
+    const Query = `SELECT * FROM curriculums`;
     console.log('Query is: ', Query);
 
     const { results } = await poolQuery(Query);
@@ -222,7 +222,7 @@ async function getAllPreprojects() {
   try {
     const Query = `SELECT * FROM preprojects AS pe INNER JOIN year_sem_sections AS sec ON pe.section_id = sec.section_id
                    INNER JOIN project_mgt_subjects AS sub ON sec.subject_id = sub.subject_id
-                   INNER JOIN curriculum AS cur ON sub.curriculum_id = cur.curriculum_id
+                   INNER JOIN curriculums AS cur ON sub.curriculum_id = cur.curriculum_id
                    WHERE pe.is_deleted = 0 ORDER BY preproject_id DESC
                    `;
     console.log('Query1 is: ', Query);
@@ -260,7 +260,7 @@ async function getonePreproject(preproject_id) {
       ON pe.section_id = sec.section_id
       INNER JOIN project_mgt_subjects AS sub
       ON sec.subject_id = sub.subject_id
-      INNER JOIN curriculum AS cur
+      INNER JOIN curriculums AS cur
       ON sub.curriculum_id = cur.curriculum_id
       INNER JOIN preprojects_advisers AS advi
       ON pe.preproject_id = advi.preproject_id AND advi.adviser_status = '1'
@@ -453,7 +453,7 @@ async function getAllProjects() {
     const Query = `SELECT * FROM projects AS pro 
                    INNER JOIN year_sem_sections AS sec ON pro.section_id = sec.section_id
                    INNER JOIN project_mgt_subjects AS sub ON sec.subject_id = sub.subject_id
-                   INNER JOIN curriculum AS cur ON sub.curriculum_id = cur.curriculum_id
+                   INNER JOIN curriculums AS cur ON sub.curriculum_id = cur.curriculum_id
                    INNER JOIN preprojects AS pre ON pre.preproject_id = pro.preproject_id
                    WHERE pro.is_deleted = 0 ORDER BY pro.project_id DESC
                    `;
@@ -492,7 +492,7 @@ async function getoneProjects(project_id) {
       ON pro.section_id = sec.section_id
       INNER JOIN project_mgt_subjects AS sub
       ON sec.subject_id = sub.subject_id
-      INNER JOIN curriculum AS cur
+      INNER JOIN curriculums AS cur
       ON sub.curriculum_id = cur.curriculum_id
       INNER JOIN projects_advisers AS advi
       ON pro.project_id = advi.project_id AND advi.adviser_status = '1'

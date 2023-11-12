@@ -5,7 +5,7 @@ var dbconfig = {
         host: 'localhost',
         user: 'root',
         password: '',
-        database: 'project_mgt'
+        database: 'test'
         //database: 'ce_project_mgt'
     },
     Dev_online: {
