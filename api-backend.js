@@ -7,9 +7,11 @@ const FormData = require("form-data");
 const Project_mgt_route_backoffice = require("./routes/project_mgt/backOffice/backOffice");
 const Project_mgt_route_searching = require("./routes/project_mgt/backOffice/searching");
 const Project_mgt_route_authen = require("./routes/project_mgt/backOffice/authen");
+const Project_mgt_route_section = require("./routes/project_mgt/backOffice/section");
+const Project_mgt_route_documentfrom = require("./routes/project_mgt/backOffice/documentfrom");
 
 // ------------------ Websocket ----------------- //
-const hapiPort = 3200;
+const hapiPort = 8081;
 const webPort = 3280;
 
 const init = async () => {
@@ -25,6 +27,8 @@ const init = async () => {
   Project_mgt_route_backoffice(server);
   Project_mgt_route_searching(server);
   Project_mgt_route_authen(server);
+  Project_mgt_route_section(server);
+  Project_mgt_route_documentfrom(server);
   // ...
 
   // Greeting API

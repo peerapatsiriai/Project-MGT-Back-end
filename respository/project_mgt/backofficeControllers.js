@@ -11,6 +11,7 @@ const { get } = require('request');
 const pool = mysql.createPool(config);
 const poolQuery = util.promisify(pool.query).bind(pool);
 
+///////////////////////////////////////// Pre-project //////////////////////////////////////////////////////////////
 async function insertNewPreProject(
   section_id,
   preproject_name_th,
@@ -142,7 +143,7 @@ async function updatePreProject(
     const insertStudentQuery = `INSERT INTO preprojects_studens (preproject_id, studen_id) VALUES (?, ?)`;
     const insertAdviserQuery = `INSERT INTO preprojects_advisers (preproject_id, instructor_id, adviser_status) VALUES (?, ?, "1")`;
     const insertSubAdviserQuery = `INSERT INTO preprojects_advisers (preproject_id, instructor_id, adviser_status) VALUES (?, ?, "2")`;
-    const insertCommitteeQuery = `INSERT INTO preprojects_committees (preproject_id, instructor_id) VALUES (?, ?)`;
+    const insertCommitteeQuery = `INSERT INTO preprojects_committees (preproject_id, instructor_id, created_date_time, last_update) VALUES (?, ?, NOW(), NOW())`;
 
     await poolQuery(clearStudenQuery);
     await poolQuery(clearAdviserQuery);
@@ -249,6 +250,8 @@ async function saveDocument(preproject_id, document_type, document_name, documen
   }
 }
 
+////////////////////////////////////////// Project ////////////////////////////////////////////////////////////////
+
 // upload document preproject
 async function saveDocumentProject(project_id, document_type, document_name) {
 
@@ -330,7 +333,7 @@ async function updateProject(
 ) {
   try {
     console.log(1150);
-    const updatePreprojectQuery = `UPDATE projects SET section_id = ?, project_name_th = ?, project_name_eng = ?, project_code = ?, project_status = ?, last_updated = NOW() WHERE project_id = ?`;
+    const updatePreprojectQuery = `UPDATE projects SET section_id = ?, project_name_th = ?, project_name_eng = ?, project_code = ?, project_type = ?, project_status = ?, last_updated = NOW() WHERE project_id = ?`;
 
     // Update the preproject and await the result
     await poolQuery(updatePreprojectQuery, [
@@ -338,7 +341,7 @@ async function updateProject(
       project_name_th,
       project_name_eng,
       project_code,
-      // project_type,
+      project_type,
       project_status,
       project_id,
     ]);

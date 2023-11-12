@@ -53,8 +53,6 @@ async function authenticationteacher(username, password) {
   });
 }
 
-
-
 async function authenticationteacherproject(username, password) {
   if (username === 'nisan' && password === '1150') {
     const token = jwt.sign(

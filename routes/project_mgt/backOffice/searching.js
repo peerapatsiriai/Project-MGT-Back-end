@@ -3,10 +3,6 @@ const backoffice = require('../../../respository/project_mgt/backofficeControlle
 const transfer = require('../../../respository/project_mgt/transferControllers');
 module.exports = (server) => {
   
-  ////////////////////////////////////////////////////////////////////////////////////
-  //------------------------------- GET --------------------------------------------//
-  ////////////////////////////////////////////////////////////////////////////////////
-
   //API: http://localhost:3200/api/project-mgt/curriculums
   // ส่งข้อมูลหลักสูตรทั้งหมด
   server.route({
@@ -56,6 +52,39 @@ module.exports = (server) => {
       try {
         const responsedata =
           await searching.searchingRepo.getAllSubjectInCurriculums(
+            curriculum_id
+          );
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+  // ส่งข้อมูลวิชาทั้งหมดภายในหลักสูตรที่เลือกโดยต้องส่ง ID ของหลักสูตรเข้ามา
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/subjects_project',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var param = request.query;
+      const { curriculum_id } = param;
+      try {
+        const responsedata =
+          await searching.searchingRepo.getSubjectProjectInCurriculums(
             curriculum_id
           );
         if (responsedata.error) {

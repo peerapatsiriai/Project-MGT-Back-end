@@ -15,6 +15,7 @@ const poolQuery = (query) => {
   });
 };
 
+
 async function getAllCurriculums() {
   try {
     const Query = `SELECT * FROM curriculum`;
@@ -47,6 +48,36 @@ async function getAllSubjectInCurriculums(curriculum_id) {
   try {
     // Status 1 is subject is pre-porject subject
     const Query = `SELECT * FROM project_mgt_subjects WHERE curriculum_id = ${curriculum_id} AND subject_type = 1`;
+    console.log('Query is: ', Query);
+
+    const { results } = await poolQuery(Query);
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        data: results,
+        message: 'SearchAllSubjects Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        message: 'Subject not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
+
+
+// find project subject in curriculum
+async function getSubjectProjectInCurriculums(curriculum_id) {
+  try {
+    // Status 1 is subject is pre-porject subject
+    const Query = `SELECT * FROM project_mgt_subjects WHERE curriculum_id = ${curriculum_id} AND subject_type = 2`;
     console.log('Query is: ', Query);
 
     const { results } = await poolQuery(Query);
@@ -131,7 +162,7 @@ async function getAllSectionInYear(subject_id, year) {
 
 async function getAllListInstructors() {
   try {
-    const Query = `SELECT * FROM teacher`;
+    const Query = `SELECT * FROM biographical_teacher`;
     console.log('Query is: ', Query);
 
     const { results } = await poolQuery(Query);
@@ -160,7 +191,7 @@ async function getAllListInstructors() {
 
 async function getAllListStudents() {
   try {
-    const Query = `SELECT * FROM student`;
+    const Query = `SELECT * FROM biographical_student`;
     console.log('Query is: ', Query);
 
     const { results } = await poolQuery(Query);
@@ -233,33 +264,33 @@ async function getonePreproject(preproject_id) {
       ON sub.curriculum_id = cur.curriculum_id
       INNER JOIN preprojects_advisers AS advi
       ON pe.preproject_id = advi.preproject_id AND advi.adviser_status = '1'
-      INNER JOIN teacher AS ins
-      ON advi.instructor_id = ins.tea_id 
+      INNER JOIN biographical_teacher AS ins
+      ON advi.instructor_id = ins.teacher_id 
       WHERE pe.preproject_id = '${preproject_id}'
     `;
 
-    const StudentQuery = `SELECT stu2.Id,stu2.stu_name, stu2.stu_lname, stu2.stu_id 
+    const StudentQuery = `SELECT stu2.student_id, stu2.prefix, stu2.first_name, stu2.last_name, stu2.id_rmutl 
      FROM preprojects AS pre
      INNER JOIN preprojects_studens AS stu
      ON pre.preproject_id = stu.preproject_id
-     INNER JOIN student AS stu2
-     ON stu.studen_id = stu2.Id  
+     INNER JOIN biographical_student AS stu2
+     ON stu.studen_id = stu2.student_id  
      WHERE pre.preproject_id = '${preproject_id}'     
      `;
 
-    const subadviserQuery = `SELECT ins.tea_id ,ins.tea_name, ins.tea_lname FROM preprojects AS pre
+    const subadviserQuery = `SELECT ins.teacher_id, ins.prefix, ins.first_name, ins.last_name FROM preprojects AS pre
                               INNER JOIN preprojects_advisers AS advi
                               ON pre.preproject_id = advi.preproject_id AND advi.adviser_status = '2'
-                              INNER JOIN teacher AS ins
-                              ON advi.instructor_id = ins.tea_id
+                              INNER JOIN biographical_teacher AS ins
+                              ON advi.instructor_id = ins.teacher_id
                               WHERE pre.preproject_id = '${preproject_id}'
                             `;
 
-    const committeeQuery = `SELECT ins.tea_id,ins.tea_name, tea_lname, ins.tea_lname FROM preprojects AS pre
+    const committeeQuery = `SELECT ins.teacher_id, ins.prefix, ins.first_name, ins.last_name FROM preprojects AS pre
                             INNER JOIN preprojects_committees AS com
                             ON pre.preproject_id = com.preproject_id
-                            INNER JOIN teacher AS ins
-                            ON com.instructor_id = ins.tea_id
+                            INNER JOIN biographical_teacher AS ins
+                            ON com.instructor_id = ins.teacher_id
                             WHERE pre.preproject_id = '${preproject_id}'
     `;
 
@@ -346,7 +377,7 @@ async function getonePreproject(preproject_id) {
   }
 }
 
-// preproject
+// preproject document
 async function getListInOneDocuments(preproject_id, document_type) {
   try {
     const QueryDocumentList = `SELECT * FROM 
@@ -356,28 +387,28 @@ async function getListInOneDocuments(preproject_id, document_type) {
                                 ORDER BY created_date_time DESC
                                 `;
 
-    const StudentQuery = `SELECT stu2.Id,stu2.stu_name, stu2.stu_lname, stu2.stu_id 
+    const StudentQuery = `SELECT stu2.student_id, stu2.prefix, stu2.first_name, stu2.last_name, stu2.id_rmutl 
      FROM preprojects AS pre
      INNER JOIN preprojects_studens AS stu
      ON pre.preproject_id = stu.preproject_id
-     INNER JOIN student AS stu2
-     ON stu.studen_id = stu2.Id  
+     INNER JOIN biographical_student AS stu2
+     ON stu.studen_id = stu2.student_id  
      WHERE pre.preproject_id = '${preproject_id}'     
      `;
 
-    const adviserQuery = `SELECT ins.tea_id, ins.tea_name, ins.tea_lname FROM preprojects AS pre
+    const adviserQuery = `SELECT ins.teacher_id, ins.prefix, ins.first_name, ins.last_name FROM preprojects AS pre
                               INNER JOIN preprojects_advisers AS advi
                               ON pre.preproject_id = advi.preproject_id
-                              INNER JOIN teacher AS ins
-                              ON advi.instructor_id = ins.tea_id
+                              INNER JOIN biographical_teacher AS ins
+                              ON advi.instructor_id = ins.teacher_id
                               WHERE pre.preproject_id = '${preproject_id}'
                             `;
 
-    const committeeQuery = `SELECT ins.tea_id, ins.tea_name, ins.tea_lname FROM preprojects AS pre
+    const committeeQuery = `SELECT ins.teacher_id, ins.prefix, ins.first_name, ins.last_name FROM preprojects AS pre
                             INNER JOIN preprojects_committees AS com
                             ON pre.preproject_id = com.preproject_id
-                            INNER JOIN teacher AS ins
-                            ON com.instructor_id = ins.tea_id
+                            INNER JOIN biographical_teacher AS ins
+                            ON com.instructor_id = ins.teacher_id
                             WHERE pre.preproject_id = '${preproject_id}'
     `;
     console.log('Query is: ', QueryDocumentList);
@@ -417,7 +448,6 @@ async function getListInOneDocuments(preproject_id, document_type) {
   }
 }
 
- 
 async function getAllProjects() {
   try {
     const Query = `SELECT * FROM projects AS pro 
@@ -466,35 +496,35 @@ async function getoneProjects(project_id) {
       ON sub.curriculum_id = cur.curriculum_id
       INNER JOIN projects_advisers AS advi
       ON pro.project_id = advi.project_id AND advi.adviser_status = '1'
-      INNER JOIN teacher AS ins
-      ON advi.instructor_id = ins.tea_id
+      INNER JOIN biographical_teacher AS ins
+      ON advi.instructor_id = ins.teacher_id
       INNER JOIN preprojects AS pre
       ON pre.preproject_id = pro.preproject_id
       WHERE pro.project_id = '${project_id}' 
     `;
 
-    const StudentQuery = `SELECT stu2.stu_id,stu2.stu_name, stu2.stu_lname 
+    const StudentQuery = `SELECT stu2.student_id, stu2.id_rmutl, stu2.prefix ,stu2.first_name, stu2.last_name 
      FROM projects AS pro
      INNER JOIN projects_students AS stu
      ON pro.project_id = stu.project_id
-     INNER JOIN student AS stu2
-     ON stu.studen_id = stu2.Id  
+     INNER JOIN biographical_student AS stu2
+     ON stu.studen_id = stu2.student_id  
      WHERE pro.project_id = '${project_id}'     
      `;
 
-    const subadviserQuery = `SELECT ins.tea_id, ins.tea_name, ins.tea_lname FROM projects AS pro
+    const subadviserQuery = `SELECT ins.teacher_id, ins.prefix, ins.first_name, ins.last_name FROM projects AS pro
                               INNER JOIN projects_advisers AS advi
                               ON pro.project_id = advi.project_id AND advi.adviser_status = '2'
-                              INNER JOIN teacher AS ins
-                              ON advi.instructor_id = ins.tea_id
+                              INNER JOIN biographical_teacher AS ins
+                              ON advi.instructor_id = ins.teacher_id
                               WHERE pro.project_id = '${project_id}'
                             `;
 
-    const committeeQuery = `SELECT ins.tea_id, ins.tea_name, ins.tea_lname FROM projects AS pro
+    const committeeQuery = `SELECT ins.teacher_id, ins.prefix, ins.first_name, ins.last_name FROM projects AS pro
                             INNER JOIN projects_committees AS com
                             ON pro.project_id = com.project_id
-                            INNER JOIN teacher AS ins
-                            ON com.instructor_id = ins.tea_id
+                            INNER JOIN biographical_teacher AS ins
+                            ON com.instructor_id = ins.teacher_id
                             WHERE pro.project_id = '${project_id}'
     `;
 
@@ -579,7 +609,7 @@ async function getoneProjects(project_id) {
   }
 }
 
-// project
+// project document
 async function getListInOneDocumentsProject(project_id, document_type) {
   try {
     const QueryDocumentList = `SELECT * FROM 
@@ -632,5 +662,6 @@ module.exports.searchingRepo = {
   getListInOneDocuments: getListInOneDocuments,
   getAllProjects:getAllProjects,
   getoneProjects:getoneProjects,
-  getListInOneDocumentsProject:getListInOneDocumentsProject
+  getListInOneDocumentsProject:getListInOneDocumentsProject,
+  getSubjectProjectInCurriculums:getSubjectProjectInCurriculums
 };
