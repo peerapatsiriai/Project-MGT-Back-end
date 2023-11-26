@@ -15,5 +15,12 @@ var dbconfig = {
         database: "sql6635663",
         port: "3306"
     },
+    Production: {
+        host: "sql6.freesqldatabase.com",
+        user: "sql6635663",
+        password: "NktAhYk6bD",
+        database: "sql6635663",
+        port: "3306"
+    },
 };
 module.exports = dbconfig;

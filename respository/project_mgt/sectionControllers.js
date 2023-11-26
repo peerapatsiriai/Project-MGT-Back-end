@@ -40,12 +40,11 @@ async function getAllSubjectInCurriculums(curriculum_id) {
 
 async function openNewSection(subject_id, sec_name, semester, year) {
     try {
-        
         const Query = `
         INSERT INTO year_sem_sections (subject_id, section_name, semester_order, sem_year, created_date_time, last_updated)
         VALUES ('${subject_id}', '${sec_name}', '${semester}', '${year}', NOW(), NOW())
       `;
-        console.log(Query);
+
         const sec_Result = await poolQuery(Query);
         return {
             statusCode: 201,
@@ -66,7 +65,7 @@ async function sectionList() {
         SELECT * FROM year_sem_sections AS sec
         INNER JOIN project_mgt_subjects AS sub
         ON sec.subject_id = sub.subject_id
-        INNER JOIN curriculums AS cur
+        INNER JOIN curriculum AS cur
         ON cur.curriculum_id = sub.curriculum_id
         ORDER BY section_id DESC
       `;

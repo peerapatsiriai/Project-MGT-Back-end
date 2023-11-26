@@ -27,7 +27,8 @@ async function insertNewPreProject(
 ) {
   try {
     let preproject_id;
-    const insertPreprojectQuery = `INSERT INTO preprojects (section_id, preproject_name_th, preproject_name_eng, project_code, project_type, project_status, created_date_time, last_updated, created_by, is_deleted) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, 0)`;
+    const insertPreprojectQuery = `INSERT INTO preprojects (preproject_name_th, preproject_name_eng, project_code, project_type, project_status, created_date_time, last_updated, created_by, is_deleted) VALUES (?, ?, ?, ?, ?, NOW(), NOW(), ?, 0)`;
+    const insertPreprojectinjointable = `INSERT INTO preproject_in_section (section_id, preproject_id, created_datetime) VALUES (?, ?, NOW())`
     const insertStudentQuery = `INSERT INTO preprojects_studens (preproject_id, studen_id, created_date_time, last_update) VALUES (?, ?, NOW(), NOW())`;
     const insertAdviserQuery = `INSERT INTO preprojects_advisers (preproject_id, instructor_id, adviser_status, created_date_time, last_update) VALUES (?, ?, "1", NOW(), NOW())`;
     const insertSubAdviserQuery = `INSERT INTO preprojects_advisers (preproject_id, instructor_id, adviser_status, created_date_time, last_update) VALUES (?, ?, "2", NOW(), NOW())`;
@@ -35,7 +36,6 @@ async function insertNewPreProject(
 
     // Insert the new preproject and await the result
     const insertResult = await poolQuery(insertPreprojectQuery, [
-      section_id,
       preproject_name_th,
       preproject_name_eng,
       project_code,
@@ -44,7 +44,6 @@ async function insertNewPreProject(
       created_by,
     ]);
     console.log('Query is: ', insertPreprojectQuery, [
-      section_id,
       preproject_name_th,
       preproject_name_eng,
       project_code,
@@ -59,6 +58,9 @@ async function insertNewPreProject(
     }
 
     preproject_id = insertResult.insertId;
+
+    // Insert new preproject to join table
+    await poolQuery(insertPreprojectinjointable, [section_id, preproject_id]);
 
     // Insert the students Preproject
     for (let student of studen_id) {
@@ -122,11 +124,10 @@ async function updatePreProject(
 ) {
   try {
     console.log(1150);
-    const updatePreprojectQuery = `UPDATE preprojects SET section_id = ?, preproject_name_th = ?, preproject_name_eng = ?, project_code = ?, project_type = ?, project_status = ?, last_updated = NOW() WHERE preproject_id = ?`;
+    const updatePreprojectQuery = `UPDATE preprojects SET preproject_name_th = ?, preproject_name_eng = ?, project_code = ?, project_type = ?, project_status = ?, last_updated = NOW() WHERE preproject_id = ?`;
 
     // Update the preproject and await the result
     await poolQuery(updatePreprojectQuery, [
-      section_id,
       preproject_name_th,
       preproject_name_eng,
       project_code,
@@ -225,15 +226,15 @@ async function saveDocument(preproject_id, document_type, document_name, documen
 
   try {
 
-    const uploadDocumentQuery = 
-    `
+    const uploadDocumentQuery =
+      `
       INSERT INTO preprojects_documents 
       (preproject_id, document_type, document_name, document_owner, document_role, document_description ,document_status, created_date_time, created_by)
       VALUES (${preproject_id} ,'${document_type}' ,"${document_name}" ,'${document_owner}', '${document_role}', '${description}' ,1 ,NOW() ,NOW()) 
     `
     await poolQuery(uploadDocumentQuery)
     console.log(uploadDocumentQuery);
-    
+
     // Return success
     return {
       statusCode: 200,
@@ -257,15 +258,15 @@ async function saveDocumentProject(project_id, document_type, document_name) {
 
   try {
 
-    const uploadDocumentQuery = 
-    `
+    const uploadDocumentQuery =
+      `
       INSERT INTO projects_documents 
       (project_id, document_type, document_name, document_status, created_date_time, created_by)
       VALUES (${project_id} ,'${document_type}' ,"${document_name}" ,1 ,NOW() ,NOW()) 
     `
     await poolQuery(uploadDocumentQuery)
     console.log(uploadDocumentQuery);
-    
+
     // Return success
     return {
       statusCode: 200,
@@ -282,7 +283,7 @@ async function saveDocumentProject(project_id, document_type, document_name) {
   }
 }
 
-async function deleteProject( project_id ) {
+async function deleteProject(project_id) {
 
   try {
 
@@ -294,12 +295,12 @@ async function deleteProject( project_id ) {
     console.log(updateStatusQuery);
 
 
-    const findPKResult = await poolQuery(findPrimarykeyOfPreproject,[project_id]);
+    const findPKResult = await poolQuery(findPrimarykeyOfPreproject, [project_id]);
     console.log(findPrimarykeyOfPreproject);
-    const ProjectPK = findPKResult[0].project_id
+    const preProjectPK = findPKResult[0].preproject_id
 
 
-    await poolQuery(updateStatusPreproject,[ProjectPK])
+    await poolQuery(updateStatusPreproject, [preProjectPK])
     console.log(updateStatusPreproject);
     // Return success
     return {
@@ -317,7 +318,6 @@ async function deleteProject( project_id ) {
   }
 }
 
-
 async function updateProject(
   project_id,
   section_id,
@@ -333,11 +333,10 @@ async function updateProject(
 ) {
   try {
     console.log(1150);
-    const updatePreprojectQuery = `UPDATE projects SET section_id = ?, project_name_th = ?, project_name_eng = ?, project_code = ?, project_type = ?, project_status = ?, last_updated = NOW() WHERE project_id = ?`;
+    const updatePreprojectQuery = `UPDATE projects SET project_name_th = ?, project_name_eng = ?, project_code = ?, project_type = ?, project_status = ?, last_updated = NOW() WHERE project_id = ?`;
 
     // Update the preproject and await the result
     await poolQuery(updatePreprojectQuery, [
-      section_id,
       project_name_th,
       project_name_eng,
       project_code,
@@ -408,12 +407,66 @@ async function updateProject(
   }
 }
 
+//////////////////////////////////////// Subject /////////////////////////////////////////////////////////
+
+// ย้ายวิชาที่เลือกเป็นวิชาในระบบจัดการโปรเจค
+async function selectProjectSubject(subject_id, curriculum_id, subject_type) {
+
+  try {
+    // Target Subject DATA
+    const DataSubjectQuery = `SELECT * FROM subjects WHERE subject_id = '${subject_id}'`
+    const Subject_data = await poolQuery(DataSubjectQuery);
+
+    // เช็คว่าในหลักสูตรนี้มีวิชา preproject หรือ project 
+    const checkSubjectQuery = `SELECT * FROM project_mgt_subjects WHERE curriculum_id = '${curriculum_id}' AND subject_type = '${subject_type}'`
+    const check_result = await poolQuery(checkSubjectQuery);
+
+    if (check_result.length > 0) {
+      // UPDATE DATA
+      const updatesubjectQuery = `UPDATE project_mgt_subjects 
+      SET subject_code = '${Subject_data[0].subject_code}', 
+      subject_name_th = '${Subject_data[0].subject_name_th}', 
+      subject_name_en = '${Subject_data[0].subject_name_en}', 
+      subject_type = ${subject_type} 
+      WHERE subject_id = ${check_result[0].subject_id}`
+      await poolQuery(updatesubjectQuery);
+    }
+    else {
+      // INSERT PROJECT SUBJECT
+      const insertsubjectQuery = `
+        INSERT INTO project_mgt_subjects 
+        SET subject_code = '${Subject_data[0].subject_code}', 
+        curriculum_id = '${curriculum_id}', 
+        subject_name_th = '${Subject_data[0].subject_name_th}', 
+        subject_name_en = '${Subject_data[0].subject_name_en}', 
+        subject_type = ${subject_type}
+      `;
+      await poolQuery(insertsubjectQuery);
+    }
+    // Return success
+    return {
+      statusCode: 200,
+      returnCode: 0,
+      message: 'Selected Project Subject Success',
+    };
+  } catch (error) {
+    console.error('Error:', error);
+    return {
+      statusCode: 500,
+      returnCode: 11,
+      message: 'Server Error',
+    };
+  }
+}
+
+
 module.exports.backofficeRepo = {
   insertNewPreProject: insertNewPreProject,
   updatePreProject: updatePreProject,
   deletePreproject: deletePreproject,
-  saveDocument:saveDocument,
-  deleteProject:deleteProject,
+  saveDocument: saveDocument,
+  deleteProject: deleteProject,
   saveDocumentProject: saveDocumentProject,
-  updateProject: updateProject
+  updateProject: updateProject,
+  selectProjectSubject: selectProjectSubject
 };

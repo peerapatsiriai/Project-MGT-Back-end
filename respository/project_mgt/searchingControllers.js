@@ -18,7 +18,7 @@ const poolQuery = (query) => {
 
 async function getAllCurriculums() {
   try {
-    const Query = `SELECT * FROM curriculums`;
+    const Query = `SELECT * FROM curriculum`;
     console.log('Query is: ', Query);
 
     const { results } = await poolQuery(Query);
@@ -71,7 +71,6 @@ async function getAllSubjectInCurriculums(curriculum_id) {
     // pool.end();
   }
 }
-
 
 // find project subject in curriculum
 async function getSubjectProjectInCurriculums(curriculum_id) {
@@ -220,12 +219,18 @@ async function getAllListStudents() {
 
 async function getAllPreprojects() {
   try {
-    const Query = `SELECT * FROM preprojects AS pe INNER JOIN year_sem_sections AS sec ON pe.section_id = sec.section_id
-                   INNER JOIN project_mgt_subjects AS sub ON sec.subject_id = sub.subject_id
-                   INNER JOIN curriculums AS cur ON sub.curriculum_id = cur.curriculum_id
-                   WHERE pe.is_deleted = 0 ORDER BY preproject_id DESC
+    const Query = `SELECT * FROM preprojects AS pe
+                   INNER JOIN preproject_in_section AS sec_pre
+                   ON sec_pre.preproject_id = pe.preproject_id
+                   INNER JOIN year_sem_sections AS sec 
+                   ON sec_pre.section_id = sec.section_id
+                   INNER JOIN project_mgt_subjects AS sub 
+                   ON sec.subject_id = sub.subject_id
+                   INNER JOIN curriculum AS cur 
+                   ON sub.curriculum_id = cur.curriculum_id
+                   WHERE pe.is_deleted = 0 ORDER BY pe.preproject_id DESC
                    `;
-    console.log('Query1 is: ', Query);
+    console.log('Query is: ', Query);
 
     const { results } = await poolQuery(Query);
 
@@ -256,11 +261,13 @@ async function getonePreproject(preproject_id) {
     const PreprojectQuery = `
       SELECT * FROM
       preprojects AS pe
+      INNER JOIN preproject_in_section AS secpre
+      ON secpre.preproject_id = pe.preproject_id
       INNER JOIN year_sem_sections AS sec
-      ON pe.section_id = sec.section_id
+      ON secpre.section_id = sec.section_id
       INNER JOIN project_mgt_subjects AS sub
       ON sec.subject_id = sub.subject_id
-      INNER JOIN curriculums AS cur
+      INNER JOIN curriculum AS cur
       ON sub.curriculum_id = cur.curriculum_id
       INNER JOIN preprojects_advisers AS advi
       ON pe.preproject_id = advi.preproject_id AND advi.adviser_status = '1'
@@ -451,9 +458,10 @@ async function getListInOneDocuments(preproject_id, document_type) {
 async function getAllProjects() {
   try {
     const Query = `SELECT * FROM projects AS pro 
-                   INNER JOIN year_sem_sections AS sec ON pro.section_id = sec.section_id
+                   INNER JOIN project_in_section AS secpro ON secpro.preproject_id = pro.preproject_id
+                   INNER JOIN year_sem_sections AS sec ON secpro.section_id = sec.section_id
                    INNER JOIN project_mgt_subjects AS sub ON sec.subject_id = sub.subject_id
-                   INNER JOIN curriculums AS cur ON sub.curriculum_id = cur.curriculum_id
+                   INNER JOIN curriculum AS cur ON sub.curriculum_id = cur.curriculum_id
                    INNER JOIN preprojects AS pre ON pre.preproject_id = pro.preproject_id
                    WHERE pro.is_deleted = 0 ORDER BY pro.project_id DESC
                    `;
@@ -488,11 +496,13 @@ async function getoneProjects(project_id) {
     const projectQuery = `
       SELECT * FROM
       projects AS pro
+      INNER JOIN project_in_section AS prosec
+      ON pro.project_id = prosec.project_id
       INNER JOIN year_sem_sections AS sec
-      ON pro.section_id = sec.section_id
+      ON prosec.section_id = sec.section_id
       INNER JOIN project_mgt_subjects AS sub
       ON sec.subject_id = sub.subject_id
-      INNER JOIN curriculums AS cur
+      INNER JOIN curriculum AS cur
       ON sub.curriculum_id = cur.curriculum_id
       INNER JOIN projects_advisers AS advi
       ON pro.project_id = advi.project_id AND advi.adviser_status = '1'
@@ -582,7 +592,7 @@ async function getoneProjects(project_id) {
       });
     };
     separateCE(documentResult.results);
-    console.log(ListDocument)
+
     if (projectResults.results.length > 0) {
       return {
         statusCode: 200,
@@ -648,7 +658,315 @@ async function getListInOneDocumentsProject(project_id, document_type) {
   }
 }
 
+// All project TYPE
+async function getAllProjecttype() {
+  try {
+    const Query = `SELECT * FROM project_types`;
+    console.log('Query is: ', Query);
 
+    const { results } = await poolQuery(Query);
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        returnCode: 1,
+        data: results,
+        message: 'Search project-type Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        returnCode: 11,
+        message: 'Project type not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
+
+// ALL preproject status
+async function getAllPreprorojectstatus() {
+  try {
+    const Query = `SELECT * FROM preproject_status`;
+    console.log('Query is: ', Query);
+
+    const { results } = await poolQuery(Query);
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        returnCode: 1,
+        data: results,
+        message: 'Search Preproject-status Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        returnCode: 11,
+        message: 'Preproject status not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
+
+// ALL project status
+async function getAllProjectstatus() {
+  try {
+    const Query = `SELECT * FROM project_status`;
+    console.log('Query is: ', Query);
+
+    const { results } = await poolQuery(Query);
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        returnCode: 1,
+        data: results,
+        message: 'Search Pre-status Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        returnCode: 11,
+        message: 'Project status not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
+
+// ALL general subject in system
+async function getaAllGeneralSubjectInCurriculum(curriculum_id) {
+  console.log(curriculum_id);
+  try {
+    const Query = `SELECT * FROM subjects WHERE curriculum_id = '${curriculum_id}'`;
+    console.log('Query is: ', Query);
+
+    const { results } = await poolQuery(Query);
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        returnCode: 1,
+        data: results,
+        message: 'Search All Subject Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        returnCode: 11,
+        message: 'Subject not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
+
+// Select ALL Project Subjec
+async function getAllProjectSubjert() {
+  try {
+    const Query = `SELECT * FROM project_mgt_subjects`;
+    console.log('Query is: ', Query);
+
+    const { results } = await poolQuery(Query);
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        returnCode: 1,
+        data: results,
+        message: 'Search Subject Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        returnCode: 11,
+        message: 'Project status not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
+
+// Select One Project Subjec
+async function getOneProjectSubject(curriculum_id) {
+  try {
+    const Query = `SELECT * FROM project_mgt_subjects WHERE curriculum_id = '${curriculum_id}'`;
+    console.log('Query is: ', Query);
+
+    const { results } = await poolQuery(Query);
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        returnCode: 1,
+        data: results,
+        message: 'Search Subject Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        returnCode: 11,
+        message: 'Project subject not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
+// Get all preproject not yet transfer
+async function preprojectsnottransfer() {
+  try {
+    const Query = `SELECT * FROM preprojects WHERE project_status <= 5`;
+    console.log('Query is: ', Query);
+
+    const { results } = await poolQuery(Query);
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        returnCode: 1,
+        data: results,
+        message: 'Search preprojects Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        returnCode: 11,
+        message: 'Project preprojects not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
+
+// Get all sec active
+async function all_sec_active() {
+  try {
+    const Query = `SELECT * FROM year_sem_sections AS sec INNER JOIN project_mgt_subjects AS sub ON sec.subject_id = sub.subject_id WHERE sec_status = 1`;
+    console.log('Query is: ', Query);
+
+    const { results } = await poolQuery(Query);
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        returnCode: 1,
+        data: results,
+        message: 'Search section Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        returnCode: 11,
+        message: 'Section not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
+
+// Get all preproject by sec_id
+async function preproject_in_sec(section_id) {
+  try {
+    const Query = `
+                    SELECT * FROM preproject_in_section AS secpre 
+                    INNER JOIN preprojects AS pre
+                    ON secpre.preproject_id = pre.preproject_id
+                    WHERE secpre.section_id = '${section_id}'
+                  `;
+    console.log('Query is: ', Query);
+
+    const { results } = await poolQuery(Query);
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        returnCode: 1,
+        data: results,
+        message: 'Search Preproject Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        returnCode: 11,
+        message: 'Preproject not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
+
+// Get all project by sec_id
+async function project_in_sec(section_id) {
+  try {
+    const Query = `
+                    SELECT * FROM project_in_section AS secpro
+                    INNER JOIN projects AS pro
+                    ON secpro.project_id = pro.project_id
+                    WHERE secpro.section_id = '${section_id}'
+                  `;
+    console.log('Query is: ', Query);
+
+    const { results } = await poolQuery(Query);
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        returnCode: 1,
+        data: results,
+        message: 'Search Preproject Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        returnCode: 11,
+        message: 'Preproject not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
 
 module.exports.searchingRepo = {
   getAllCurriculums: getAllCurriculums,
@@ -663,5 +981,15 @@ module.exports.searchingRepo = {
   getAllProjects:getAllProjects,
   getoneProjects:getoneProjects,
   getListInOneDocumentsProject:getListInOneDocumentsProject,
-  getSubjectProjectInCurriculums:getSubjectProjectInCurriculums
+  getSubjectProjectInCurriculums:getSubjectProjectInCurriculums,
+  getAllProjectstatus: getAllProjectstatus,
+  getAllProjecttype: getAllProjecttype,
+  getaAllGeneralSubjectInCurriculum: getaAllGeneralSubjectInCurriculum,
+  getAllProjectSubjert: getAllProjectSubjert,
+  getOneProjectSubject: getOneProjectSubject,
+  preprojectsnottransfer:preprojectsnottransfer,
+  getAllPreprorojectstatus:getAllPreprorojectstatus,
+  all_sec_active: all_sec_active,
+  preproject_in_sec:preproject_in_sec,
+  project_in_sec:project_in_sec
 };

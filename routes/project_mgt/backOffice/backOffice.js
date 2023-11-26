@@ -181,6 +181,42 @@ module.exports = (server) => {
     },
   });
 
+  // เปลี่ยนแปลงสถานะ Pre-project -> Project หลายตัว
+  server.route({
+    method: 'POST',
+    path: '/api/project-mgt/transferproject_many',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, h) {
+      var body = request.payload;
+      const { preproject_list, section_id } = body;
+      try {
+        const responsedata = await Transfer.transferRepo.transferlistproject(
+          preproject_list,
+          section_id
+        );
+        if (responsedata.error) {
+          return responsedata;
+        } else {
+          if (responsedata.statusCode === 400)
+            return h.response(responsedata).code(400);
+          return responsedata;
+        }
+      } catch (err) {
+        console.log(err);
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
   // บันทึกเอกสาร
   server.route({
     method: 'POST',
@@ -368,4 +404,35 @@ module.exports = (server) => {
       }
     },
   });
+
+  // Select subject to project-subject
+  server.route({
+    method: 'POST',
+    path: '/api/project-mgt/select_project_subject',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var body = request.payload;
+      const { curriculum_id, subject_id, subject_type } = body;
+      try {
+        const responsedata = await BackOffice.backofficeRepo.selectProjectSubject(subject_id, curriculum_id, subject_type)
+        if (responsedata.error) {
+          return responsedata;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
 };

@@ -22,7 +22,7 @@ async function authenticationteacher(username, password) {
     Query = `SELECT id_rmutl , _email FROM biographical_teacher WHERE _email = '${username}' AND id_rmutl = '${password}' `;
     console.log('Query1 is: ', Query);
     pool.query(Query, function (error, results) {
-      if (results !== undefined ) {
+      if (results[0] !== undefined) {
         // console.log('results is', results[0]);
         const userRole = 'อาจารย์';
         var token = jwt.sign(
@@ -88,7 +88,7 @@ async function authenticationadmin(username, password) {
     Query = `SELECT off_user , off_pass FROM officer WHERE off_user = '${username}' AND off_pass = '${password}' `;
     console.log('Query1 is: ', Query);
     pool.query(Query, function (error, results) {
-      if (results !== undefined) {
+      if (results[0] !== undefined) {
         // console.log('results is', results[0]);
         const userRole = 'admin';
         var token = jwt.sign(

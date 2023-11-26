@@ -68,7 +68,7 @@ CREATE TABLE preproject_document_froms (
 -- Table: preprojects
 CREATE TABLE preprojects (
     preproject_id int  NOT NULL AUTO_INCREMENT,
-    section_id int  NOT NULL,
+    section_id int NULL,
     preproject_name_th varchar(255)  NOT NULL,
     preproject_name_eng varchar(255)  NOT NULL,
     project_code varchar(255)  NOT NULL,
@@ -168,7 +168,7 @@ CREATE TABLE project_document_froms (
 -- Table: projects
 CREATE TABLE projects (
     project_id int  NOT NULL AUTO_INCREMENT,
-    section_id int  NOT NULL,
+    section_id int NULL,
     preproject_id int  NOT NULL,
     project_name_th varchar(255)  NOT NULL,
     project_name_eng varchar(255)  NOT NULL,
@@ -268,6 +268,64 @@ CREATE TABLE year_sem_sections (
     last_updated datetime  NULL,
     created_date_time datetime  NULL,
     CONSTRAINT year_sem_sections_pk PRIMARY KEY (section_id)
+);
+
+CREATE TABLE project_potentials (
+    poten_id int  NOT NULL AUTO_INCREMENT,
+    project_id int NOT NULL,
+    subject_id varchar(255)  NOT NULL,
+    weight varchar(255)  NOT NULL,
+    is_deleted char(1)  NOT NULL DEFAULT 0,
+    created_datetime datetime  NULL,
+    CONSTRAINT project_potentials_pk PRIMARY KEY (poten_id)
+);
+
+-- Table: project_status
+CREATE TABLE project_status (
+    status_id int  NOT NULL AUTO_INCREMENT,
+    status_name varchar(255)  NOT NULL,
+    status_active char(1)  NOT NULL,
+    CONSTRAINT project_status_pk PRIMARY KEY (status_id)
+);
+
+-- Table: project_types
+CREATE TABLE project_types (
+    type_id int  NOT NULL AUTO_INCREMENT,
+    type_name varchar(255)  NOT NULL,
+    type_status char(1)  NOT NULL DEFAULT 1,
+    CONSTRAINT project_types_pk PRIMARY KEY (type_id)
+);
+
+CREATE TABLE preproject_in_section (
+    pre_sec_id int  NOT NULL AUTO_INCREMENT,
+    section_id int  NOT NULL,
+    preproject_id int  NOT NULL,
+    created_datetime datetime NULL,
+    CONSTRAINT preproject_in_section_pk PRIMARY KEY (pre_sec_id)
+);
+
+-- Table: project_in_section
+CREATE TABLE project_in_section (
+    pro_sec_id int  NOT NULL AUTO_INCREMENT,
+    section_id int  NOT NULL,
+    project_id int  NOT NULL,
+    created_datetime datetime NULL,
+    CONSTRAINT project_in_section_pk PRIMARY KEY (pro_sec_id)
+);
+
+CREATE TABLE preproject_status (
+    status_id int  NOT NULL AUTO_INCREMENT,
+    status_name varchar(255)  NOT NULL,
+    status_active char(1)  NOT NULL,
+    CONSTRAINT preproject_status_pk PRIMARY KEY (status_id)
+);
+
+-- Table: project_activity
+CREATE TABLE project_activity (
+    activity_id int  NOT NULL AUTO_INCREMENT,
+    description varchar(255)  NOT NULL,
+    created_datetime datetime  NOT NULL,
+    CONSTRAINT project_activity_pk PRIMARY KEY (activity_id)
 );
 
 -- End of file.

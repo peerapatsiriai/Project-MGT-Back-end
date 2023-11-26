@@ -403,6 +403,7 @@ module.exports = (server) => {
     },
   });
 
+  // Search one project
   server.route({
     method: 'GET',
     path: '/api/project-mgt/project',
@@ -462,5 +463,300 @@ module.exports = (server) => {
     },
   });
 
+  // Search all project type
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/project_type',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      try {
+        const responsedata =
+          await searching.searchingRepo.getAllProjecttype();
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+  
+  // Search all project status
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/project_status',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      try {
+        const responsedata =
+          await searching.searchingRepo.getAllProjectstatus();
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+  // Search all preproject status
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/preproject_status',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      try {
+        const responsedata =
+          await searching.searchingRepo.getAllPreprorojectstatus();
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+  // Search all general subject in system by curriculms id
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/subject_general',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var param = request.query;
+      const { curriculum_id } = param;
+      try {
+        const responsedata = await searching.searchingRepo.getaAllGeneralSubjectInCurriculum(curriculum_id);
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+  // Search all project subjects
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/all_project_subject',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var param = request.query;
+      try {
+        const responsedata = await searching.searchingRepo.getAllProjectSubjert();
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+  // Search one project subject
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/one_project_subject',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var param = request.query;
+      const { curriculum_id } = param;
+      try {
+        const responsedata = await searching.searchingRepo.getOneProjectSubject(curriculum_id);
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+  // Search all preproject not yet transfer
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/preproject_not_yet_transfer',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+
+      try {
+        const responsedata = await searching.searchingRepo.preprojectsnottransfer();
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+
+  // Search all section active in system
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/secs_active',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+
+      try {
+        const responsedata = await searching.searchingRepo.all_sec_active();
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+  // Search all preproject in section by section_id
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/preproject_in_sec',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var param = request.query;
+      const { section_id } = param;
+      try {
+        const responsedata = await searching.searchingRepo.preproject_in_sec(section_id);
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+
+  // Search all project in section by section_id
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/project_in_sec',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var param = request.query;
+      const { section_id } = param;
+      try {
+        const responsedata = await searching.searchingRepo.project_in_sec(section_id);
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
 
 };
