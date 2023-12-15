@@ -73,7 +73,7 @@ CREATE TABLE preprojects (
     preproject_name_eng varchar(255)  NOT NULL,
     project_code varchar(255)  NOT NULL,
     project_type varchar(255)  NOT NULL,
-    project_status char(1)  NOT NULL,
+    project_status varchar(255)  NOT NULL,
     project_extend int  NULL,
     created_date_time datetime  NULL,
     last_updated datetime  NULL,
@@ -174,7 +174,7 @@ CREATE TABLE projects (
     project_name_eng varchar(255)  NOT NULL,
     project_code varchar(255)  NOT NULL,
     project_type varchar(255)  NOT NULL,
-    project_status char(1)  NOT NULL,
+    project_status varchar(255)  NOT NULL,
     project_extend int  NULL,
     created_date_time datetime  NOT NULL,
     last_updated datetime  NULL,
@@ -321,12 +321,82 @@ CREATE TABLE preproject_status (
 );
 
 -- Table: project_activity
+-- CREATE TABLE project_activity (
+--     activity_id int  NOT NULL AUTO_INCREMENT,
+--     description varchar(255)  NOT NULL,
+--     created_datetime datetime  NOT NULL,
+--     CONSTRAINT project_activity_pk PRIMARY KEY (activity_id)
+-- );
+
+CREATE TABLE preproject_activitys (
+    activity_id int  NOT NULL AUTO_INCREMENT,
+    preproject_id int  NOT NULL,
+    preproject_description varchar(255)  NOT NULL,
+    activity_order int  NOT NULL,
+    created_datetime datetime NULL,
+    CONSTRAINT preproject_activitys_pk PRIMARY KEY (activity_id)
+);
+
+-- Table: project_activity
 CREATE TABLE project_activity (
     activity_id int  NOT NULL AUTO_INCREMENT,
-    description varchar(255)  NOT NULL,
+    project_id int  NOT NULL,
+    project_description varchar(255)  NOT NULL,
+    activity_order int  NOT NULL,
     created_datetime datetime  NOT NULL,
     CONSTRAINT project_activity_pk PRIMARY KEY (activity_id)
 );
+
+CREATE TABLE biographical_teacher (
+    teacher_id INT AUTO_INCREMENT PRIMARY KEY,
+    prefix VARCHAR(50),
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    id_rmutl VARCHAR(20),
+    _email VARCHAR(255),
+    status VARCHAR(50),
+    birthday DATE
+);
+
+-- Insert data
+INSERT INTO biographical_teacher (teacher_id, prefix, first_name, last_name, id_rmutl, _email, status, birthday) VALUES
+(1, 'Mr', 'John', 'Doe', '123456', 'john.doe@example.com', 'Active', '1990-01-15'),
+(2, 'Ms', 'Jane', 'Smith', '654321', 'jane.smith@example.com', 'Inactive', '1985-08-22'),
+(3, 'Dr', 'Michael', 'Johnson', '987654', 'michael.j@example.com', 'Active', '1978-04-03'),
+(4, 'Mrs', 'Emily', 'Davis', '456789', 'emily.d@example.com', 'Active', '1982-11-07'),
+(5, 'Mr', 'Robert', 'Brown', '789012', 'robert.b@example.com', 'Inactive', '1995-06-30'),
+(6, 'Miss', 'Samantha', 'White', '234567', 'samantha.w@example.com', 'Active', '1989-12-18'),
+(7, 'Mr', 'Daniel', 'Lee', '567890', 'daniel.l@example.com', 'Inactive', '1975-09-25'),
+(8, 'Ms', 'Olivia', 'Miller', '890123', 'olivia.m@example.com', 'Active', '1987-03-12'),
+(9, 'Dr', 'Christopher', 'Wilson', '345678', 'chris.w@example.com', 'Active', '1980-02-08'),
+(10, 'Mrs', 'Sophia', 'Taylor', '012345', 'sophia.t@example.com', 'Inactive', '1992-07-14');
+
+-- Create table with auto-incrementing primary key
+CREATE TABLE biographical_student (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    prefix VARCHAR(50),
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    id_rmutl VARCHAR(20),
+    email VARCHAR(255),
+    birthday DATE
+);
+
+-- Insert data
+INSERT INTO biographical_student (prefix, first_name, last_name, id_rmutl, email, birthday) VALUES
+('Mr', 'David', 'Johnson', '123456', 'david.j@example.com', '1998-05-20'),
+('Ms', 'Emily', 'Smith', '654321', 'emily.s@example.com', '1997-09-15'),
+('Dr', 'Daniel', 'Lee', '987654', 'daniel.l@example.com', '1999-03-10'),
+('Mrs', 'Sophia', 'Taylor', '456789', 'sophia.t@example.com', '1996-12-05'),
+('Mr', 'Christopher', 'Wilson', '789012', 'chris.w@example.com', '1998-07-22'),
+('Miss', 'Olivia', 'Miller', '234567', 'olivia.m@example.com', '1997-01-30'),
+('Mr', 'Michael', 'Davis', '567890', 'michael.d@example.com', '1999-11-18'),
+('Ms', 'Emma', 'Brown', '890123', 'emma.b@example.com', '1996-08-07'),
+('Dr', 'William', 'White', '345678', 'william.w@example.com', '1998-04-02'),
+('Mrs', 'Ava', 'Anderson', '012345', 'ava.a@example.com', '1997-10-14');
+
+
+
 
 -- End of file.
 

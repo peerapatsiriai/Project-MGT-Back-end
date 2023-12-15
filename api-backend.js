@@ -40,6 +40,14 @@ const init = async () => {
     },
   });
 
+  server.route({
+    method: "GET",
+    path: "/test",
+    handler: () => {
+      return "<h3> Welcome to CE Reform API V1.0.1</h3>";
+    },
+  });
+
   // API: http://localhost:3200/api/v1/getaveragewaitingtime
   server.route({
     method: "GET",
