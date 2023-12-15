@@ -18,7 +18,7 @@ const poolQuery = (query) => {
 
 async function getAllCurriculums() {
   try {
-    const Query = `SELECT * FROM curriculum`;
+    const Query = `SELECT * FROM curriculums`;
     console.log('Query is: ', Query);
 
     const { results } = await poolQuery(Query);
