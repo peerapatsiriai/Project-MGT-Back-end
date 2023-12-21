@@ -3,41 +3,41 @@
 
 -- tables
 -- Table: biographical_student
-CREATE TABLE biographical_student (
-    student_id int  NOT NULL AUTO_INCREMENT,
-    prefix varchar(255)  NOT NULL,
-    first_name varchar(255)  NOT NULL,
-    last_name varchar(255)  NOT NULL,
-    id_rmutl varchar(255)  NOT NULL,
-    email varchar(255)  NOT NULL,
-    status char(1)  NOT NULL,
-    curriculum varchar(255)  NOT NULL,
-    section varchar(255)  NOT NULL,
-    birthday varchar(255)  NOT NULL,
-    CONSTRAINT biographical_student_pk PRIMARY KEY (student_id)
-);
+-- CREATE TABLE biographical_student (
+--     student_id int  NOT NULL AUTO_INCREMENT,
+--     prefix varchar(255)  NOT NULL,
+--     first_name varchar(255)  NOT NULL,
+--     last_name varchar(255)  NOT NULL,
+--     id_rmutl varchar(255)  NOT NULL,
+--     email varchar(255)  NOT NULL,
+--     status char(1)  NOT NULL,
+--     curriculum varchar(255)  NOT NULL,
+--     section varchar(255)  NOT NULL,
+--     birthday varchar(255)  NOT NULL,
+--     CONSTRAINT biographical_student_pk PRIMARY KEY (student_id)
+-- );
 
-CREATE TABLE biographical_teacher (
-    teacher_id int  NOT NULL AUTO_INCREMENT,
-    prefix varchar(255)  NOT NULL,
-    first_name varchar(255)  NOT NULL,
-    last_name varchar(255)  NOT NULL,
-    id_rmutl varchar(255)  NOT NULL,
-    email varchar(255)  NOT NULL,
-    status char(1)  NOT NULL,
-    curriculum varchar(255)  NOT NULL,
-    section varchar(255)  NOT NULL,
-    birthday varchar(255)  NOT NULL,
-    CONSTRAINT biographical_teacher_pk PRIMARY KEY (teacher_id)
-);
+-- CREATE TABLE biographical_teacher (
+--     teacher_id int  NOT NULL AUTO_INCREMENT,
+--     prefix varchar(255)  NOT NULL,
+--     first_name varchar(255)  NOT NULL,
+--     last_name varchar(255)  NOT NULL,
+--     id_rmutl varchar(255)  NOT NULL,
+--     email varchar(255)  NOT NULL,
+--     status char(1)  NOT NULL,
+--     curriculum varchar(255)  NOT NULL,
+--     section varchar(255)  NOT NULL,
+--     birthday varchar(255)  NOT NULL,
+--     CONSTRAINT biographical_teacher_pk PRIMARY KEY (teacher_id)
+-- );
 
 -- Table: curriculums
-CREATE TABLE curriculums (
-    curriculum_id int  NOT NULL AUTO_INCREMENT,
-    curriculum_name varchar(255)  NOT NULL,
-    year int  NOT NULL,
-    CONSTRAINT curriculums_pk PRIMARY KEY (curriculum_id)
-);
+-- CREATE TABLE curriculums (
+--     curriculum_id int  NOT NULL AUTO_INCREMENT,
+--     curriculum_name varchar(255)  NOT NULL,
+--     year int  NOT NULL,
+--     CONSTRAINT curriculums_pk PRIMARY KEY (curriculum_id)
+-- );
 
 -- Table: instructors
 CREATE TABLE instructors (
@@ -73,7 +73,7 @@ CREATE TABLE preprojects (
     preproject_name_eng varchar(255)  NOT NULL,
     project_code varchar(255)  NOT NULL,
     project_type varchar(255)  NOT NULL,
-    project_status varchar(255)  NOT NULL,
+    project_status varchar(255) NULL,
     project_extend int  NULL,
     created_date_time datetime  NULL,
     last_updated datetime  NULL,
@@ -87,7 +87,7 @@ CREATE TABLE preprojects_advisers (
     adviser_id int  NOT NULL AUTO_INCREMENT,
     preproject_id int  NOT NULL,
     instructor_id int  NOT NULL,
-    adviser_status char(1)  NOT NULL,
+    adviser_status char(1)  NOT NULL DEFAULT '1',
     created_date_time datetime  NULL,
     last_update datetime  NULL,
     CONSTRAINT preprojects_advisers_pk PRIMARY KEY (adviser_id)
@@ -98,7 +98,7 @@ CREATE TABLE preprojects_committees (
     committee_id int  NOT NULL AUTO_INCREMENT,
     preproject_id int  NOT NULL,
     instructor_id int  NOT NULL,
-    committee_status varchar(1)  NOT NULL,
+    committee_status varchar(1)  NOT NULL DEFAULT '1',
     created_date_time datetime  NULL,
     last_update datetime  NULL,
     CONSTRAINT preprojects_committees_pk PRIMARY KEY (committee_id)
@@ -148,7 +148,7 @@ CREATE TABLE preprojects_studens (
     studen_preproject_id int  NOT NULL AUTO_INCREMENT,
     preproject_id int  NOT NULL,
     studen_id int  NOT NULL,
-    status char(1)  NOT NULL,
+    status char(1)  NOT NULL  DEFAULT '1',
     created_date_time datetime  NULL,
     last_update datetime  NULL,
     CONSTRAINT preprojects_studens_pk PRIMARY KEY (studen_preproject_id)
@@ -173,13 +173,13 @@ CREATE TABLE projects (
     project_name_th varchar(255)  NOT NULL,
     project_name_eng varchar(255)  NOT NULL,
     project_code varchar(255)  NOT NULL,
-    project_type varchar(255)  NOT NULL,
-    project_status varchar(255)  NOT NULL,
+    project_type varchar(255) NULL,
+    project_status varchar(255) NULL,
     project_extend int  NULL,
-    created_date_time datetime  NOT NULL,
+    created_date_time datetime NULL,
     last_updated datetime  NULL,
-    created_by datetime  NULL,
-    is_deleted int  NOT NULL,
+    created_by varchar(255) NULL,
+    is_deleted int  NOT NULL DEFAULT 0,
     CONSTRAINT projects_pk PRIMARY KEY (project_id)
 );
 
@@ -189,7 +189,7 @@ CREATE TABLE projects_advisers (
     preproject_adviser_id int  NOT NULL,
     project_id int  NOT NULL,
     instructor_id int  NOT NULL,
-    adviser_status char(1)  NOT NULL,
+    adviser_status char(1)  NOT NULL DEFAULT '1',
     created_date_time datetime  NULL,
     last_update datetime  NULL,
     CONSTRAINT projects_advisers_pk PRIMARY KEY (adviser_id)
@@ -201,7 +201,7 @@ CREATE TABLE projects_committees (
     preproject_committee_id int  NOT NULL,
     project_id int  NOT NULL,
     instructor_id int  NOT NULL,
-    committee_status varchar(1)  NOT NULL,
+    committee_status varchar(1)  NOT NULL DEFAULT '1',
     created_date_time datetime  NULL,
     last_update datetime  NULL,
     CONSTRAINT projects_committees_pk PRIMARY KEY (committee_id)
@@ -239,7 +239,7 @@ CREATE TABLE projects_students (
     studen_preproject_id int  NOT NULL,
     project_id int  NOT NULL,
     studen_id int  NOT NULL,
-    status char(1)  NOT NULL,
+    status char(1)  NOT NULL DEFAULT '1',
     created_date_time datetime  NULL,
     last_update datetime  NULL,
     CONSTRAINT students_projects_pk PRIMARY KEY (studen_project_id)
@@ -395,7 +395,42 @@ INSERT INTO biographical_student (prefix, first_name, last_name, id_rmutl, email
 ('Dr', 'William', 'White', '345678', 'william.w@example.com', '1998-04-02'),
 ('Mrs', 'Ava', 'Anderson', '012345', 'ava.a@example.com', '1997-10-14');
 
+INSERT INTO `project_mgt_subjects` (`curriculum_id`, `subject_code`, `subject_type`, `subject_name_th`, `subject_name_en`, `credit_qty`) VALUES ('1', 'ENGCE113', '1', 'การเตรียมโครงงานวิศวกรรมคอมพิวเตอร์', 'Computer Engineering Project', '1');
+INSERT INTO `project_mgt_subjects` (`curriculum_id`, `subject_code`, `subject_type`, `subject_name_th`, `subject_name_en`, `credit_qty`) VALUES ('1', 'ENGCE114', '2', 'โครงงานวิศวกรรมคอมพิวเตอร์', 'Computer Engineering Project', '3');
 
+INSERT INTO `year_sem_sections` (`subject_id`, `section_name`, `sem_year`, `semester_order`, `sec_status`) VALUES ('1', 'SEC1', '2566', '2', '1');
+INSERT INTO `year_sem_sections` (`subject_id`, `section_name`, `sem_year`, `semester_order`, `sec_status`) VALUES ('1', 'SEC2', '2566', '2', '1');
+INSERT INTO `year_sem_sections` (`subject_id`, `section_name`, `sem_year`, `semester_order`, `sec_status`) VALUES ('2', 'SEC1', '2566', '2', '1');
+INSERT INTO `year_sem_sections` (`subject_id`, `section_name`, `sem_year`, `semester_order`, `sec_status`) VALUES ('1', 'SEC1', '2566', '1', '0');
+INSERT INTO `year_sem_sections` (`subject_id`, `section_name`, `sem_year`, `semester_order`, `sec_status`) VALUES ('2', 'SEC1', '2566', '1', '0');
+
+INSERT INTO `project_types` (`type_name`, `type_status`) VALUES ('IOT', '1');
+INSERT INTO `project_types` (`type_name`, `type_status`) VALUES ('Network', '1');
+INSERT INTO `project_types` (`type_name`, `type_status`) VALUES ('Pure software ', '1');
+INSERT INTO `project_types` (`type_name`, `type_status`) VALUES ('Hardware', '1');
+INSERT INTO `project_types` (`type_name`, `type_status`) VALUES ('AI', '1');
+INSERT INTO `project_types` (`type_name`, `type_status`) VALUES ('Robot', '1');
+INSERT INTO `project_types` (`type_name`, `type_status`) VALUES ('Blockchain', '1');
+INSERT INTO `project_types` (`type_name`, `type_status`) VALUES ('Others', '1');
+
+INSERT INTO `preproject_status` (`status_name`, `status_active`) VALUES ('Reject', '1');
+INSERT INTO `preproject_status` (`status_name`, `status_active`) VALUES ('Wait for approve', '1');
+INSERT INTO `preproject_status` (`status_name`, `status_active`) VALUES ('Inprocess', '1');
+INSERT INTO `preproject_status` (`status_name`, `status_active`) VALUES ('Can test', '1');
+INSERT INTO `preproject_status` (`status_name`, `status_active`) VALUES ('Tes ing', '1');
+INSERT INTO `preproject_status` (`status_name`, `status_active`) VALUES ('Passed', '1');
+INSERT INTO `preproject_status` (`status_name`, `status_active`) VALUES ('Tranfered', '1');
+
+INSERT INTO `project_status` (`status_name`, `status_active`) VALUES ('Reject', '1');
+INSERT INTO `project_status` (`status_name`, `status_active`) VALUES ('Send CH1', '1');
+INSERT INTO `project_status` (`status_name`, `status_active`) VALUES ('Send CH2', '1');
+INSERT INTO `project_status` (`status_name`, `status_active`) VALUES ('Send CH3', '1');
+INSERT INTO `project_status` (`status_name`, `status_active`) VALUES ('Send CH4', '1');
+INSERT INTO `project_status` (`status_name`, `status_active`) VALUES ('Send CH5', '1');
+INSERT INTO `project_status` (`status_name`, `status_active`) VALUES ('Can test', '1');
+INSERT INTO `project_status` (`status_name`, `status_active`) VALUES ('Testing', '1');
+INSERT INTO `project_status` (`status_name`, `status_active`) VALUES ('Pass', '1');
+INSERT INTO `project_status` (`status_name`, `status_active`) VALUES ('Display', '1');
 
 
 -- End of file.
