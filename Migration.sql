@@ -1,3 +1,5 @@
+use se_study_db;
+
 -- Created by Vertabelo (http://vertabelo.com)
 -- Last modification date: 2023-11-12 18:16:37.866
 
@@ -31,13 +33,13 @@
 --     CONSTRAINT biographical_teacher_pk PRIMARY KEY (teacher_id)
 -- );
 
--- Table: curriculums
--- CREATE TABLE curriculums (
---     curriculum_id int  NOT NULL AUTO_INCREMENT,
---     curriculum_name varchar(255)  NOT NULL,
---     year int  NOT NULL,
---     CONSTRAINT curriculums_pk PRIMARY KEY (curriculum_id)
--- );
+
+CREATE TABLE curriculums (
+    curriculum_id int  NOT NULL AUTO_INCREMENT,
+    curriculum_name varchar(255)  NOT NULL,
+    year int  NOT NULL,
+    CONSTRAINT curriculums_pk PRIMARY KEY (curriculum_id)
+);
 
 -- Table: instructors
 CREATE TABLE instructors (
@@ -57,9 +59,9 @@ CREATE TABLE instructors (
 -- Table: preproject_document_froms
 CREATE TABLE preproject_document_froms (
     ce_doc_id int  NOT NULL AUTO_INCREMENT,
-    ce_file_name varchar(255)  NOT NULL,
-    ce_type varchar(255)  NOT NULL,
-    ce_status int  NOT NULL DEFAULT 0,
+    ce_file_name varchar(255)  NULL,
+    ce_type varchar(255)  NULL,
+    ce_status int  NULL DEFAULT 0,
     created_datetime datetime  NULL,
     last_updated datetime  NULL,
     CONSTRAINT preproject_document_froms_pk PRIMARY KEY (ce_doc_id)
@@ -69,25 +71,25 @@ CREATE TABLE preproject_document_froms (
 CREATE TABLE preprojects (
     preproject_id int  NOT NULL AUTO_INCREMENT,
     section_id int NULL,
-    preproject_name_th varchar(255)  NOT NULL,
-    preproject_name_eng varchar(255)  NOT NULL,
-    project_code varchar(255)  NOT NULL,
-    project_type varchar(255)  NOT NULL,
+    preproject_name_th varchar(255)  NULL,
+    preproject_name_eng varchar(255)  NULL,
+    project_code varchar(255)   NULL,
+    project_type varchar(255)   NULL,
     project_status varchar(255) NULL,
     project_extend int  NULL,
     created_date_time datetime  NULL,
     last_updated datetime  NULL,
     created_by int  NULL,
-    is_deleted int  NOT NULL DEFAULT 0,
+    is_deleted int   NULL DEFAULT 0,
     CONSTRAINT preprojects_pk PRIMARY KEY (preproject_id)
 );
 
 -- Table: preprojects_advisers
 CREATE TABLE preprojects_advisers (
-    adviser_id int  NOT NULL AUTO_INCREMENT,
-    preproject_id int  NOT NULL,
-    instructor_id int  NOT NULL,
-    adviser_status char(1)  NOT NULL DEFAULT '1',
+    adviser_id int NOT  NULL AUTO_INCREMENT,
+    preproject_id int NULL,
+    instructor_id int   NULL,
+    adviser_status char(1)   NULL DEFAULT '1',
     created_date_time datetime  NULL,
     last_update datetime  NULL,
     CONSTRAINT preprojects_advisers_pk PRIMARY KEY (adviser_id)
@@ -95,10 +97,10 @@ CREATE TABLE preprojects_advisers (
 
 -- Table: preprojects_committees
 CREATE TABLE preprojects_committees (
-    committee_id int  NOT NULL AUTO_INCREMENT,
-    preproject_id int  NOT NULL,
-    instructor_id int  NOT NULL,
-    committee_status varchar(1)  NOT NULL DEFAULT '1',
+    committee_id int NOT NULL AUTO_INCREMENT,
+    preproject_id int NULL,
+    instructor_id int   NULL,
+    committee_status varchar(1)   NULL DEFAULT '1',
     created_date_time datetime  NULL,
     last_update datetime  NULL,
     CONSTRAINT preprojects_committees_pk PRIMARY KEY (committee_id)
@@ -106,10 +108,10 @@ CREATE TABLE preprojects_committees (
 
 -- Table: preprojects_document_comments
 CREATE TABLE preprojects_document_comments (
-    comment_id int  NOT NULL AUTO_INCREMENT,
-    document_id int  NOT NULL,
-    comment_text varchar(255)  NOT NULL,
-    comment_status varchar(1)  NOT NULL,
+    comment_id int NOT NULL AUTO_INCREMENT,
+    document_id int   NULL,
+    comment_text varchar(255)   NULL,
+    comment_status varchar(1)   NULL,
     created_date_time datetime  NULL,
     created_by datetime  NULL,
     CONSTRAINT preprojects_document_comments_pk PRIMARY KEY (comment_id)
@@ -118,13 +120,13 @@ CREATE TABLE preprojects_document_comments (
 -- Table: preprojects_documents
 CREATE TABLE preprojects_documents (
     document_id int  NOT NULL AUTO_INCREMENT,
-    preproject_id int  NOT NULL,
-    document_type varchar(50)  NOT NULL,
-    document_name varchar(255)  NOT NULL,
-    document_owner char(1)  NOT NULL,
-    document_role varchar(255) NOT NULL,
-    document_description varchar(255) NOT NULL,
-    document_status char(1)  NOT NULL,
+    preproject_id int   NULL,
+    document_type varchar(50)   NULL,
+    document_name varchar(255)   NULL,
+    document_owner char(1)   NULL,
+    document_role varchar(255)  NULL,
+    document_description varchar(255)  NULL,
+    document_status char(1)   NULL,
     created_date_time datetime  NULL,
     created_by datetime  NULL,
     CONSTRAINT preprojects_documents_pk PRIMARY KEY (document_id)
@@ -133,12 +135,12 @@ CREATE TABLE preprojects_documents (
 -- Table: preprojects_public_relations
 CREATE TABLE preprojects_public_relations (
     public_relations_id int  NOT NULL,
-    preproject_name varchar(1)  NOT NULL,
-    instructor_id int  NOT NULL,
-    preproject_type int  NOT NULL,
-    preproject_status int  NOT NULL,
+    preproject_name Varchar(255)   NULL,
+    instructor_id int   NULL,
+    header_name varchar(255)   NULL,
+    description text   NULL,
     created_date_time datetime  NULL,
-    isdelete int  NOT NULL,
+    isdelete int   NULL,
     created_by int  NULL,
     CONSTRAINT preprojects_public_relations_pk PRIMARY KEY (public_relations_id)
 );
@@ -146,9 +148,9 @@ CREATE TABLE preprojects_public_relations (
 -- Table: preprojects_studens
 CREATE TABLE preprojects_studens (
     studen_preproject_id int  NOT NULL AUTO_INCREMENT,
-    preproject_id int  NOT NULL,
-    studen_id int  NOT NULL,
-    status char(1)  NOT NULL  DEFAULT '1',
+    preproject_id int   NULL,
+    studen_id int   NULL,
+    status char(1)   NULL  DEFAULT '1',
     created_date_time datetime  NULL,
     last_update datetime  NULL,
     CONSTRAINT preprojects_studens_pk PRIMARY KEY (studen_preproject_id)
@@ -157,9 +159,9 @@ CREATE TABLE preprojects_studens (
 -- Table: project_document_froms
 CREATE TABLE project_document_froms (
     ch_doc_id int  NOT NULL AUTO_INCREMENT,
-    ch_file_name varchar(255)  NOT NULL,
-    ch_type varchar(255)  NOT NULL,
-    ch_status int  NOT NULL,
+    ch_file_name varchar(255)   NULL,
+    ch_type varchar(255)   NULL,
+    ch_status int   NULL,
     created_datetime datetime  NULL,
     last_updated datetime  NULL,
     CONSTRAINT project_document_froms_pk PRIMARY KEY (ch_doc_id)
@@ -169,10 +171,10 @@ CREATE TABLE project_document_froms (
 CREATE TABLE projects (
     project_id int  NOT NULL AUTO_INCREMENT,
     section_id int NULL,
-    preproject_id int  NOT NULL,
-    project_name_th varchar(255)  NOT NULL,
-    project_name_eng varchar(255)  NOT NULL,
-    project_code varchar(255)  NOT NULL,
+    preproject_id int   NULL,
+    project_name_th varchar(255)   NULL,
+    project_name_eng varchar(255)   NULL,
+    project_code varchar(255)   NULL,
     project_type varchar(255) NULL,
     project_status varchar(255) NULL,
     project_extend int  NULL,
@@ -186,10 +188,10 @@ CREATE TABLE projects (
 -- Table: projects_advisers
 CREATE TABLE projects_advisers (
     adviser_id int  NOT NULL AUTO_INCREMENT,
-    preproject_adviser_id int  NOT NULL,
-    project_id int  NOT NULL,
-    instructor_id int  NOT NULL,
-    adviser_status char(1)  NOT NULL DEFAULT '1',
+    preproject_adviser_id int NULL,
+    project_id int   NULL,
+    instructor_id int   NULL,
+    adviser_status char(1)   NULL DEFAULT '1',
     created_date_time datetime  NULL,
     last_update datetime  NULL,
     CONSTRAINT projects_advisers_pk PRIMARY KEY (adviser_id)
@@ -198,10 +200,10 @@ CREATE TABLE projects_advisers (
 -- Table: projects_committees
 CREATE TABLE projects_committees (
     committee_id int  NOT NULL AUTO_INCREMENT,
-    preproject_committee_id int  NOT NULL,
-    project_id int  NOT NULL,
-    instructor_id int  NOT NULL,
-    committee_status varchar(1)  NOT NULL DEFAULT '1',
+    preproject_committee_id int  NULL,
+    project_id int   NULL,
+    instructor_id int   NULL,
+    committee_status varchar(1)   NULL DEFAULT '1',
     created_date_time datetime  NULL,
     last_update datetime  NULL,
     CONSTRAINT projects_committees_pk PRIMARY KEY (committee_id)
@@ -210,9 +212,9 @@ CREATE TABLE projects_committees (
 -- Table: projects_document_comments
 CREATE TABLE projects_document_comments (
     comment_id int  NOT NULL AUTO_INCREMENT,
-    document_id int  NOT NULL,
-    comment_text varchar(255)  NOT NULL,
-    comment_status varchar(1)  NOT NULL,
+    document_id int NULL,
+    comment_text varchar(255)   NULL,
+    comment_status varchar(1)   NULL,
     created_date_time datetime  NULL,
     created_by datetime  NULL,
     CONSTRAINT projects_document_comments_pk PRIMARY KEY (comment_id)
@@ -221,13 +223,13 @@ CREATE TABLE projects_document_comments (
 -- Table: projects_documents
 CREATE TABLE projects_documents (
     document_id int  NOT NULL AUTO_INCREMENT,
-    project_id int  NOT NULL,
-    document_type varchar(50)  NOT NULL,
-    document_name varchar(255)  NOT NULL,
-    document_owner char(1)  NOT NULL,
-    document_role varchar(255) NOT NULL,
-    document_description varchar(255) NOT NULL,
-    document_status char(1)  NOT NULL,
+    project_id int   NULL,
+    document_type varchar(50)   NULL,
+    document_name varchar(255)   NULL,
+    document_owner char(1)   NULL,
+    document_role varchar(255)  NULL,
+    document_description varchar(255)  NULL,
+    document_status char(1)   NULL,
     created_date_time datetime  NULL,
     created_by datetime  NULL,
     CONSTRAINT projects_documents_pk PRIMARY KEY (document_id)
@@ -236,10 +238,10 @@ CREATE TABLE projects_documents (
 -- Table: students_projects
 CREATE TABLE projects_students (
     studen_project_id int  NOT NULL AUTO_INCREMENT,
-    studen_preproject_id int  NOT NULL,
-    project_id int  NOT NULL,
-    studen_id int  NOT NULL,
-    status char(1)  NOT NULL DEFAULT '1',
+    studen_preproject_id int   NULL,
+    project_id int   NULL,
+    studen_id int   NULL,
+    status char(1)   NULL DEFAULT '1',
     created_date_time datetime  NULL,
     last_update datetime  NULL,
     CONSTRAINT students_projects_pk PRIMARY KEY (studen_project_id)
@@ -248,23 +250,23 @@ CREATE TABLE projects_students (
 -- Table: subjects
 CREATE TABLE project_mgt_subjects (
     subject_id int  NOT NULL AUTO_INCREMENT,
-    curriculum_id int  NOT NULL,
-    subject_code varchar(255)  NOT NULL,
-    subject_type varchar(255)  NOT NULL,
-    subject_name_th varchar(255)  NOT NULL,
-    subject_name_en varchar(255)  NOT NULL,
-    credit_qty int  NOT NULL,
+    curriculum_id int   NULL,
+    subject_code varchar(255)   NULL,
+    subject_type varchar(255)   NULL,
+    subject_name_th varchar(255)   NULL,
+    subject_name_en varchar(255)   NULL,
+    credit_qty int   NULL,
     CONSTRAINT subjects_pk PRIMARY KEY (subject_id)
 );
 
 -- Table: year_sem_sections
 CREATE TABLE year_sem_sections (
     section_id int  NOT NULL AUTO_INCREMENT,
-    subject_id int  NOT NULL,
-    section_name varchar(255)  NOT NULL,
-    sem_year int  NOT NULL,
-    semester_order int  NOT NULL,
-    sec_status char  NOT NULL DEFAULT 0,
+    subject_id int   NULL,
+    section_name varchar(255)   NULL,
+    sem_year int   NULL,
+    semester_order int   NULL,
+    sec_status char   NULL DEFAULT 0,
     last_updated datetime  NULL,
     created_date_time datetime  NULL,
     CONSTRAINT year_sem_sections_pk PRIMARY KEY (section_id)
@@ -272,10 +274,10 @@ CREATE TABLE year_sem_sections (
 
 CREATE TABLE project_potentials (
     poten_id int  NOT NULL AUTO_INCREMENT,
-    project_id int NOT NULL,
-    subject_id varchar(255)  NOT NULL,
-    weight varchar(255)  NOT NULL,
-    is_deleted char(1)  NOT NULL DEFAULT 0,
+    project_id int  NULL,
+    subject_id varchar(255)   NULL,
+    weight varchar(255)   NULL,
+    is_deleted char(1)   NULL DEFAULT 0,
     created_datetime datetime  NULL,
     CONSTRAINT project_potentials_pk PRIMARY KEY (poten_id)
 );
@@ -283,23 +285,23 @@ CREATE TABLE project_potentials (
 -- Table: project_status
 CREATE TABLE project_status (
     status_id int  NOT NULL AUTO_INCREMENT,
-    status_name varchar(255)  NOT NULL,
-    status_active char(1)  NOT NULL,
+    status_name varchar(255)   NULL,
+    status_active char(1)   NULL,
     CONSTRAINT project_status_pk PRIMARY KEY (status_id)
 );
 
 -- Table: project_types
 CREATE TABLE project_types (
     type_id int  NOT NULL AUTO_INCREMENT,
-    type_name varchar(255)  NOT NULL,
-    type_status char(1)  NOT NULL DEFAULT 1,
+    type_name varchar(255)   NULL,
+    type_status char(1)   NULL DEFAULT 1,
     CONSTRAINT project_types_pk PRIMARY KEY (type_id)
 );
 
 CREATE TABLE preproject_in_section (
     pre_sec_id int  NOT NULL AUTO_INCREMENT,
-    section_id int  NOT NULL,
-    preproject_id int  NOT NULL,
+    section_id int   NULL,
+    preproject_id int   NULL,
     created_datetime datetime NULL,
     CONSTRAINT preproject_in_section_pk PRIMARY KEY (pre_sec_id)
 );
@@ -307,16 +309,16 @@ CREATE TABLE preproject_in_section (
 -- Table: project_in_section
 CREATE TABLE project_in_section (
     pro_sec_id int  NOT NULL AUTO_INCREMENT,
-    section_id int  NOT NULL,
-    project_id int  NOT NULL,
+    section_id int   NULL,
+    project_id int   NULL,
     created_datetime datetime NULL,
     CONSTRAINT project_in_section_pk PRIMARY KEY (pro_sec_id)
 );
 
 CREATE TABLE preproject_status (
     status_id int  NOT NULL AUTO_INCREMENT,
-    status_name varchar(255)  NOT NULL,
-    status_active char(1)  NOT NULL,
+    status_name varchar(255)   NULL,
+    status_active char(1)   NULL,
     CONSTRAINT preproject_status_pk PRIMARY KEY (status_id)
 );
 
@@ -328,24 +330,24 @@ CREATE TABLE preproject_status (
 --     CONSTRAINT project_activity_pk PRIMARY KEY (activity_id)
 -- );
 
-CREATE TABLE preproject_activitys (
-    activity_id int  NOT NULL AUTO_INCREMENT,
-    preproject_id int  NOT NULL,
-    preproject_description varchar(255)  NOT NULL,
-    activity_order int  NOT NULL,
-    created_datetime datetime NULL,
-    CONSTRAINT preproject_activitys_pk PRIMARY KEY (activity_id)
-);
+-- CREATE TABLE preproject_activitys (
+--     activity_id int  NOT NULL AUTO_INCREMENT,
+--     preproject_id int   NULL,
+--     preproject_description varchar(255)   NULL,
+--     activity_order int   NULL,
+--     created_datetime datetime NULL,
+--     CONSTRAINT preproject_activitys_pk PRIMARY KEY (activity_id)
+-- );
 
 -- Table: project_activity
-CREATE TABLE project_activity (
-    activity_id int  NOT NULL AUTO_INCREMENT,
-    project_id int  NOT NULL,
-    project_description varchar(255)  NOT NULL,
-    activity_order int  NOT NULL,
-    created_datetime datetime  NOT NULL,
-    CONSTRAINT project_activity_pk PRIMARY KEY (activity_id)
-);
+-- CREATE TABLE project_activity (
+--     activity_id int  NOT NULL AUTO_INCREMENT,
+--     project_id int   NULL,
+--     project_description varchar(255)   NULL,
+--     activity_order int   NULL,
+--     created_datetime datetime   NULL,
+--     CONSTRAINT project_activity_pk PRIMARY KEY (activity_id)
+-- );
 
 CREATE TABLE biographical_teacher (
     teacher_id INT AUTO_INCREMENT PRIMARY KEY,

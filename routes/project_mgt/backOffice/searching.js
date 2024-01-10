@@ -698,6 +698,35 @@ module.exports = (server) => {
     },
   });
 
+  // Search all section Unactive in system
+  server.route({
+    method: 'GET',
+    path: '/api/project-mgt/secs_unactive',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+
+      try {
+        const responsedata = await searching.searchingRepo.all_sec_unactive();
+        if (responsedata.error) {
+          return responsedata.errMessage;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
   // Search all preproject in section by section_id
   server.route({
     method: 'GET',

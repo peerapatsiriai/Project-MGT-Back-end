@@ -26,7 +26,7 @@ async function searchYearInOnePreproject(preproject_id) {
     ON secpre.section_id = sec.section_id
     INNER JOIN project_mgt_subjects AS sub
     ON sub.subject_id = sec.subject_id
-    INNER JOIN curriculum AS cur
+    INNER JOIN curriculums AS cur
     ON cur.curriculum_id = sub.curriculum_id
     WHERE pre.preproject_id = ${preproject_id};
     `;
@@ -38,7 +38,7 @@ async function searchYearInOnePreproject(preproject_id) {
 
     const fild_Project_Subject_Id_Query = `
     SELECT DISTINCT sub.subject_id
-    FROM curriculum AS cur
+    FROM curriculums AS cur
     INNER JOIN project_mgt_subjects AS sub
     ON cur.curriculum_id = sub.curriculum_id
     WHERE cur.curriculum_id = ${curriculum_id} AND sub.subject_id != ${preproject_Subject_id};
@@ -123,7 +123,7 @@ async function transferproject(preproject_id, section_id) {
     const TransferDataQuery =
       `
       INSERT INTO projects (preproject_id,project_name_th, project_name_eng, project_code, project_status, created_date_time, created_by, last_updated)
-      SELECT preproject_id,preproject_name_th, preproject_name_eng, project_code, '1',now(), 'Admin', NOW()
+      SELECT preproject_id,preproject_name_th, preproject_name_eng, project_code, '1',NOW(), 'Admin', NOW()
       FROM preprojects
       WHERE preproject_id = ${preproject_id};
     `;

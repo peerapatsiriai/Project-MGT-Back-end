@@ -14,7 +14,7 @@ const poolQuery = util.promisify(pool.query).bind(pool);
 ////////////////////// CE Document ////////////////////////////////////
 async function getalldocument_ce() {
     try {
-        const Query = `SELECT * FROM preproject_document_froms ORDER BY ce_status AND ce_type DESC 
+        const Query = `SELECT * FROM preproject_document_froms WHERE ce_status = 1  ORDER BY ce_type  
         `;
 
         const document_Result = await poolQuery(Query);
@@ -120,11 +120,11 @@ async function unactivedocument_ce(ce_doc_id) {
     }
 }
 
-async function dowload_ce() {
+async function dowload_ce(document_type) {
+    
     try {
-        const Query = `SELECT DISTINCT ce_file_name ,ce_type ,ce_status FROM preproject_document_froms WHERE ce_status = '1' ORDER BY ce_type
-        `;
-
+        const Query = `SELECT * FROM preproject_document_froms WHERE ce_type = "${document_type}" `;
+        console.log(Query);
         const document_Result = await poolQuery(Query);
 
         if (document_Result.length > 0) {
@@ -152,7 +152,7 @@ async function dowload_ce() {
 /////////////////// CH is document of project subject
 async function getalldocument_ch() {
     try {
-        const Query = `SELECT * FROM project_document_froms ORDER BY ch_status AND ch_type DESC 
+        const Query = `SELECT * FROM project_document_froms WHERE ch_status = 1 ORDER BY ch_type  
         `;
 
         const document_Result = await poolQuery(Query);
@@ -258,9 +258,9 @@ async function unactivedocument_ch(ch_doc_id) {
     }
 }
 
-async function dowload_ch() {
+async function dowload_ch(document_type) {
     try {
-        const Query = `SELECT DISTINCT ch_file_name ,ch_type ,ch_status FROM project_document_froms WHERE ch_status = '1' ORDER BY ch_type`;
+        const Query = `SELECT * FROM project_document_froms WHERE ch_type = "${document_type}"`;
 
         const document_Result = await poolQuery(Query);
 

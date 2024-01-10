@@ -226,7 +226,7 @@ async function getAllPreprojects() {
                    ON sec_pre.section_id = sec.section_id
                    INNER JOIN project_mgt_subjects AS sub 
                    ON sec.subject_id = sub.subject_id
-                   INNER JOIN curriculum AS cur 
+                   INNER JOIN curriculums AS cur 
                    ON sub.curriculum_id = cur.curriculum_id
                    WHERE pe.is_deleted = 0 ORDER BY pe.preproject_id DESC
                    `;
@@ -267,7 +267,7 @@ async function getonePreproject(preproject_id) {
       ON secpre.section_id = sec.section_id
       INNER JOIN project_mgt_subjects AS sub
       ON sec.subject_id = sub.subject_id
-      INNER JOIN curriculum AS cur
+      INNER JOIN curriculums AS cur
       ON sub.curriculum_id = cur.curriculum_id
       INNER JOIN preprojects_advisers AS advi
       ON pe.preproject_id = advi.preproject_id AND advi.adviser_status = '1'
@@ -458,11 +458,10 @@ async function getListInOneDocuments(preproject_id, document_type) {
 async function getAllProjects() {
   try {
     const Query = `SELECT * FROM projects AS pro 
-                   INNER JOIN project_in_section AS secpro ON secpro.preproject_id = pro.preproject_id
+                   INNER JOIN project_in_section AS secpro ON secpro.project_id = pro.project_id
                    INNER JOIN year_sem_sections AS sec ON secpro.section_id = sec.section_id
                    INNER JOIN project_mgt_subjects AS sub ON sec.subject_id = sub.subject_id
-                   INNER JOIN curriculum AS cur ON sub.curriculum_id = cur.curriculum_id
-                   INNER JOIN preprojects AS pre ON pre.preproject_id = pro.preproject_id
+                   INNER JOIN curriculums AS cur ON sub.curriculum_id = cur.curriculum_id
                    WHERE pro.is_deleted = 0 ORDER BY pro.project_id DESC
                    `;
     console.log('Query1 is: ', Query);
@@ -502,14 +501,12 @@ async function getoneProjects(project_id) {
       ON prosec.section_id = sec.section_id
       INNER JOIN project_mgt_subjects AS sub
       ON sec.subject_id = sub.subject_id
-      INNER JOIN curriculum AS cur
+      INNER JOIN curriculums AS cur
       ON sub.curriculum_id = cur.curriculum_id
       INNER JOIN projects_advisers AS advi
       ON pro.project_id = advi.project_id AND advi.adviser_status = '1'
       INNER JOIN biographical_teacher AS ins
       ON advi.instructor_id = ins.teacher_id
-      INNER JOIN preprojects AS pre
-      ON pre.preproject_id = pro.preproject_id
       WHERE pro.project_id = '${project_id}' 
     `;
 
@@ -898,6 +895,36 @@ async function all_sec_active() {
   }
 }
 
+// Get all sec active
+async function all_sec_unactive() {
+  try {
+    const Query = `SELECT * FROM year_sem_sections AS sec INNER JOIN project_mgt_subjects AS sub ON sec.subject_id = sub.subject_id WHERE sec_status = 0`;
+    console.log('Query is: ', Query);
+
+    const { results } = await poolQuery(Query);
+
+    if (results.length > 0) {
+      return {
+        statusCode: 200,
+        returnCode: 1,
+        data: results,
+        message: 'Search section Success',
+      };
+    } else {
+      return {
+        statusCode: 404,
+        returnCode: 11,
+        message: 'Section not found',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } finally {
+    // pool.end();
+  }
+}
+
 // Get all preproject by sec_id
 async function preproject_in_sec(section_id) {
   try {
@@ -991,5 +1018,6 @@ module.exports.searchingRepo = {
   getAllPreprorojectstatus:getAllPreprorojectstatus,
   all_sec_active: all_sec_active,
   preproject_in_sec:preproject_in_sec,
-  project_in_sec:project_in_sec
+  project_in_sec:project_in_sec,
+  all_sec_unactive:all_sec_unactive
 };

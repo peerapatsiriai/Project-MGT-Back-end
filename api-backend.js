@@ -8,7 +8,9 @@ const Project_mgt_route_backoffice = require("./routes/project_mgt/backOffice/ba
 const Project_mgt_route_searching = require("./routes/project_mgt/backOffice/searching");
 const Project_mgt_route_authen = require("./routes/project_mgt/backOffice/authen");
 const Project_mgt_route_section = require("./routes/project_mgt/backOffice/section");
-const Project_mgt_route_documentfrom = require("./routes/project_mgt/backOffice/documentfrom");
+const Project_mgt_route_document = require("./routes/project_mgt/backOffice/documentfrom");
+const Project_mgt_route_instructor = require("./routes/project_mgt/instructor/instructor")
+const Project_mgt_route_teacher = require("./routes/project_mgt/teacher/teacher")
 
 // ------------------ Websocket ----------------- //
 const hapiPort = 8081;
@@ -17,9 +19,17 @@ const webPort = 3280;
 const init = async () => {
   const server = Hapi.Server({
     port: hapiPort,
-    host: "0.0.0.0", // Change this to your LAN IP address if needed
+    //host: "10.21.45.101", // Change this to your LAN IP address if needed
+    host: "0.0.0.0",
     routes: {
-      cors: true,
+      cors: {
+        origin: ["*"], // allow all origins, you can specify specific origins if needed
+        headers: ["Accept", "Authorization", "Content-Type", "If-None-Match"],
+        additionalHeaders: ["X-Requested-With"],
+        exposedHeaders: ["WWW-Authenticate", "Server-Authorization"],
+        maxAge: 3600,
+        credentials: true,
+      },
     },
   });
 
@@ -28,21 +38,15 @@ const init = async () => {
   Project_mgt_route_searching(server);
   Project_mgt_route_authen(server);
   Project_mgt_route_section(server);
-  Project_mgt_route_documentfrom(server);
+  Project_mgt_route_document(server)
+  Project_mgt_route_instructor(server)
+  Project_mgt_route_teacher(server)
   // ...
 
   // Greeting API
   server.route({
     method: "GET",
     path: "/",
-    handler: () => {
-      return "<h3> Welcome to CE Reform API V1.0.1</h3>";
-    },
-  });
-
-  server.route({
-    method: "GET",
-    path: "/test",
     handler: () => {
       return "<h3> Welcome to CE Reform API V1.0.1</h3>";
     },

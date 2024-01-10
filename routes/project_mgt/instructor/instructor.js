@@ -1,14 +1,14 @@
 // const InSertProject = require('../../../respository/project_mgt/searchingControllers');
 const { log } = require('util');
-const section = require('../../../respository/project_mgt/sectionControllers');
+const instructor = require('../../../respository/project_mgt/instructorControllers');
 
 
 module.exports = (server) => {
 
-  // Search all subject in curriculums
+  // Approve CE
   server.route({
     method: 'POST',
-    path: '/api/project-mgt/getsubjectincurriculums',
+    path: '/api/project-mgt/approve_preproject_document',
     config: {
       // auth: {
       //     strategy: 'jwt-strict',
@@ -20,9 +20,39 @@ module.exports = (server) => {
     },
     handler: async function (request, reply) {
       var body = request.payload;
-      const { curriculum_id } = body;
+      const { document_id } = body;
       try {
-        const responsedata = await section.sectionRepo.getAllSubjectInCurriculums(curriculum_id);
+        const responsedata = await instructor.instructorRepo.approvePreprojectDocument(document_id);
+        if (responsedata.error) {
+          return responsedata;
+        } else {
+          return responsedata;
+        }
+      } catch (err) {
+        server.log(['error', 'home'], err);
+        return err;
+      }
+    },
+  });
+
+  // Approve CH
+  server.route({
+    method: 'POST',
+    path: '/api/project-mgt/approve_project_document',
+    config: {
+      // auth: {
+      //     strategy: 'jwt-strict',
+      //     mode: 'required'
+      // },
+      cors: {
+        origin: ['*'],
+      },
+    },
+    handler: async function (request, reply) {
+      var body = request.payload;
+      const { document_id } = body;
+      try {
+        const responsedata = await instructor.instructorRepo.approveprojectDocument(document_id);
         if (responsedata.error) {
            
           return responsedata;
@@ -36,10 +66,10 @@ module.exports = (server) => {
     },
   });
 
-  // Open new section in system
+  // Update Status Prerpojec
   server.route({
     method: 'POST',
-    path: '/api/project-mgt/opennewsection',
+    path: '/api/project-mgt/change_preproject_status',
     config: {
       // auth: {
       //     strategy: 'jwt-strict',
@@ -51,9 +81,9 @@ module.exports = (server) => {
     },
     handler: async function (request, reply) {
       var body = request.payload;
-      const { subject_id, sec_name, semester, year } = body;
+      const { preproject_id, preproject_status } = body;
       try {
-        const responsedata = await section.sectionRepo.openNewSection(subject_id, sec_name, semester, year);
+        const responsedata = await instructor.instructorRepo.updatePreprojectStatus(preproject_id, preproject_status);
         if (responsedata.error) {
            
           return responsedata;
@@ -61,47 +91,16 @@ module.exports = (server) => {
           return responsedata;
         }
       } catch (err) {
-        console.log(err);
         server.log(['error', 'home'], err);
         return err;
       }
     },
   });
 
-  // Get all section list in system
-  server.route({
-    method: 'GET',
-    path: '/api/project-mgt/sections',
-    config: {
-      // auth: {
-      //     strategy: 'jwt-strict',
-      //     mode: 'required'
-      // },
-      cors: {
-        origin: ['*'],
-      },
-    },
-    handler: async function (request, reply) {
-      try {
-        
-        const responsedata = await section.sectionRepo.sectionList();
-        
-        if (responsedata.error) {
-          return responsedata.errMessage;
-        } else {
-          return responsedata;
-        }
-      } catch (err) {
-        server.log(['error', 'home'], err);
-        return err;
-      }
-    },
-  });
-
-  // Active Section
+  // Update Status Ppojec
   server.route({
     method: 'POST',
-    path: '/api/project-mgt/activesection',
+    path: '/api/project-mgt/change_project_status',
     config: {
       // auth: {
       //     strategy: 'jwt-strict',
@@ -113,41 +112,11 @@ module.exports = (server) => {
     },
     handler: async function (request, reply) {
       var body = request.payload;
-      const { section_id } = body;
+      const { project_id, project_status } = body;
       try {
-        const responsedata = await section.sectionRepo.activeSec(section_id);
+        const responsedata = await instructor.instructorRepo.updateProjectStatus(project_id, project_status);
         if (responsedata.error) {
-          return responsedata;
-        } else {
-          return responsedata;
-        }
-      } catch (err) {
-        console.log(err);
-        server.log(['error', 'home'], err);
-        return err;
-      }
-    },
-  });
-
-  // UnActive Section
-  server.route({
-    method: 'POST',
-    path: '/api/project-mgt/unactivesection',
-    config: {
-      // auth: {
-      //     strategy: 'jwt-strict',
-      //     mode: 'required'
-      // },
-      cors: {
-        origin: ['*'],
-      },
-    },
-    handler: async function (request, reply) {
-      var body = request.payload;
-      const { section_id } = body;
-      try {
-        const responsedata = await section.sectionRepo.unActiveSec(section_id);
-        if (responsedata.error) {
+           
           return responsedata;
         } else {
           return responsedata;
@@ -158,6 +127,5 @@ module.exports = (server) => {
       }
     },
   });
-
 
 };

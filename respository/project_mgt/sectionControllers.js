@@ -65,7 +65,7 @@ async function sectionList() {
         SELECT * FROM year_sem_sections AS sec
         INNER JOIN project_mgt_subjects AS sub
         ON sec.subject_id = sub.subject_id
-        INNER JOIN curriculum AS cur
+        INNER JOIN curriculums AS cur
         ON cur.curriculum_id = sub.curriculum_id
         ORDER BY section_id DESC
       `;
@@ -87,6 +87,7 @@ async function sectionList() {
             };
         }
     } catch (error) {
+        console.log(error);
         throw error;
         return error
     } finally {

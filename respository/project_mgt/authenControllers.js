@@ -19,7 +19,7 @@ async function authenticationteacher(username, password) {
   var Query;
   var pool = mysql.createPool(config);
   return new Promise((resolve, reject) => {
-    Query = `SELECT id_rmutl , _email FROM biographical_teacher WHERE _email = '${username}' AND id_rmutl = '${password}' `;
+    Query = `SELECT teacher_id, id_rmutl , _email FROM biographical_teacher WHERE _email = '${username}' AND id_rmutl = '${password}' `;
     console.log('Query1 is: ', Query);
     pool.query(Query, function (error, results) {
       if (results[0] !== undefined) {
@@ -41,6 +41,7 @@ async function authenticationteacher(username, password) {
           returnCode: 1,
           jwt: token,
           jwtRole: tokenRole,
+          teacherId: results[0].teacher_id
         });
       } else {
         pool.end();
@@ -123,7 +124,7 @@ async function authenticationstudent(username, password) {
   var Query;
   var pool = mysql.createPool(config);
   return new Promise((resolve, reject) => {
-    Query = `SELECT id_rmutl , birthday FROM biographical_student WHERE id_rmutl = '${username}' AND birthday = '${password}' `;
+    Query = `SELECT student_id, id_rmutl , birthday FROM biographical_student WHERE id_rmutl = '${username}' AND birthday = '${password}' `;
     console.log('Query1 is: ', Query);
     pool.query(Query, function (error, results) {
       if (results[0] !== undefined) {
@@ -145,6 +146,7 @@ async function authenticationstudent(username, password) {
           returnCode: 1,
           jwt: token,
           jwtRole: tokenRole,
+          studentId: results[0].student_id 
         });
       } else {
         pool.end();
