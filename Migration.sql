@@ -136,6 +136,7 @@ CREATE TABLE preprojects_documents (
 CREATE TABLE preprojects_public_relations (
     public_relations_id int  NOT NULL,
     preproject_name Varchar(255)   NULL,
+    public_relation_status Varchar(1)   NULL,
     instructor_id int   NULL,
     header_name varchar(255)   NULL,
     description text   NULL,

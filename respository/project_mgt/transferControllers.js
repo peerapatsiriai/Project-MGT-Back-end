@@ -123,7 +123,7 @@ async function transferproject(preproject_id, section_id) {
     const TransferDataQuery =
       `
       INSERT INTO projects (preproject_id,project_name_th, project_name_eng, project_code, project_status, created_date_time, created_by, last_updated)
-      SELECT preproject_id,preproject_name_th, preproject_name_eng, project_code, '1',NOW(), 'Admin', NOW()
+      SELECT preproject_id,preproject_name_th, preproject_name_eng, project_code, '2',NOW(), 'Admin', NOW()
       FROM preprojects
       WHERE preproject_id = ${preproject_id};
     `;
@@ -224,8 +224,8 @@ async function transferlistproject(project_list, section_id) {
       // ย้ายข้อมูล Preproject ลงใน DB Project
       const TransferDataQuery =
         `
-        INSERT INTO projects (preproject_id,project_name_th, project_name_eng, project_code, project_status, created_date_time, created_by, last_updated)
-        SELECT preproject_id,preproject_name_th, preproject_name_eng, project_code, '1',now(), 'Admin', NOW()
+        INSERT INTO projects (preproject_id,project_name_th, project_name_eng, project_code, project_type, project_status, created_date_time, created_by, last_updated)
+        SELECT preproject_id,preproject_name_th, preproject_name_eng, project_code, project_type,'2',now(), 'Admin', NOW()
         FROM preprojects
         WHERE preproject_id = ${preproject_id};
       `;
@@ -284,7 +284,7 @@ async function transferlistproject(project_list, section_id) {
       await poolQuery(TransferCommitteesQuery)
 
       // เปลี่ยนสถานะ Pre-project ให้เสร็จแล้ว
-      const UpdatePreprojectStatus = `UPDATE preprojects SET project_status = 5 WHERE preproject_id = ${preproject_id}`
+      const UpdatePreprojectStatus = `UPDATE preprojects SET project_status = 6 WHERE preproject_id = ${preproject_id}`
       await poolQuery(UpdatePreprojectStatus);
       console.log(UpdatePreprojectStatus);
 

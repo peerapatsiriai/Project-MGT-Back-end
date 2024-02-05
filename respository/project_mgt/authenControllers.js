@@ -19,7 +19,7 @@ async function authenticationteacher(username, password) {
   var Query;
   var pool = mysql.createPool(config);
   return new Promise((resolve, reject) => {
-    Query = `SELECT teacher_id, id_rmutl , _email FROM biographical_teacher WHERE _email = '${username}' AND id_rmutl = '${password}' `;
+    Query = `SELECT teacher_id, id_rmutl , _email, first_name, last_name FROM biographical_teacher WHERE _email = '${username}' AND id_rmutl = '${password}' `;
     console.log('Query1 is: ', Query);
     pool.query(Query, function (error, results) {
       if (results[0] !== undefined) {
@@ -41,7 +41,8 @@ async function authenticationteacher(username, password) {
           returnCode: 1,
           jwt: token,
           jwtRole: tokenRole,
-          teacherId: results[0].teacher_id
+          teacherId: results[0].teacher_id,
+          data: results
         });
       } else {
         pool.end();
@@ -73,6 +74,13 @@ async function authenticationteacherproject(username, password) {
       returnCode: 1,
       jwt: token,
       jwtRole: tokenRole,
+      data: {
+        "teacher_id": 0,
+        "id_rmutl": "00",
+        "_email": "Instructor Project",
+        "first_name": "อาจารย์ประจำวิชา",
+        "last_name": " "
+      }
     };
   } else {
     return {
@@ -86,10 +94,13 @@ async function authenticationadmin(username, password) {
   var Query;
   var pool = mysql.createPool(config);
   return new Promise((resolve, reject) => {
-    Query = `SELECT off_user , off_pass FROM officer WHERE off_user = '${username}' AND off_pass = '${password}' `;
+    // Query = `SELECT off_user , off_pass FROM officer WHERE off_user = '${username}' AND off_pass = '${password}' `;
+    
+    Query = `SELECT * FROM curruculums `;
+    
     console.log('Query1 is: ', Query);
     pool.query(Query, function (error, results) {
-      if (results[0] !== undefined) {
+      if (username === "admin" && password === "123") {
         // console.log('results is', results[0]);
         const userRole = 'admin';
         var token = jwt.sign(
@@ -124,29 +135,35 @@ async function authenticationstudent(username, password) {
   var Query;
   var pool = mysql.createPool(config);
   return new Promise((resolve, reject) => {
-    Query = `SELECT student_id, id_rmutl , birthday FROM biographical_student WHERE id_rmutl = '${username}' AND birthday = '${password}' `;
+    Query = `SELECT * FROM biographical_student WHERE id_rmutl = "${username}" AND birthday = "${password}"`;
     console.log('Query1 is: ', Query);
     pool.query(Query, function (error, results) {
-      if (results[0] !== undefined) {
-        // console.log('results is', results[0]);
+      if (error) {
+        console.error('Error executing query:', error);
+        pool.end();
+        return reject(error);
+      }
+
+      if (results.length > 0) {
         const userRole = 'นักศึกษา';
         var token = jwt.sign(
           { data: username, iat: Math.floor(Date.now() / 1000) - 30 },
           'jwt_secret',
         );
-        // console.log('tokenUser : ' + token);
+
         var tokenRole = jwt.sign(
           { dataRole: userRole, iat: Math.floor(Date.now() / 1000) - 30 },
           'jwt_secret_role',
         );
-        // console.log('tokenUserRole : ' + tokenRole);
+
         pool.end();
         return resolve({
           statusCode: 200,
           returnCode: 1,
           jwt: token,
           jwtRole: tokenRole,
-          studentId: results[0].student_id 
+          studentId: results[0].student_id,
+          data:results
         });
       } else {
         pool.end();

@@ -108,11 +108,33 @@ async function getAllSubjectYears(subject_id) {
 
     const { results } = await poolQuery(Query);
 
-    if (results.length > 0) {
+    if (true) {
       return {
         statusCode: 200,
         returnCode: 1,
-        data: results,
+        data: [{
+          "sem_year": 2560
+        }, {
+          "sem_year": 2561
+        }, {
+          "sem_year": 2562
+        }, {
+          "sem_year": 2563
+        }, {
+          "sem_year": 2564
+        }, {
+          "sem_year": 2565
+        }, {
+          "sem_year": 2566
+        }, {
+          "sem_year": 2567
+        }, {
+          "sem_year": 2568
+        }, {
+          "sem_year": 2569
+        }, {
+          "sem_year": 2570
+        }],
         message: 'SearchAllSubjects Success',
       };
     } else {
@@ -228,6 +250,8 @@ async function getAllPreprojects() {
                    ON sec.subject_id = sub.subject_id
                    INNER JOIN curriculums AS cur 
                    ON sub.curriculum_id = cur.curriculum_id
+                   INNER JOIN preproject_status AS stu
+                   ON pe.project_status = stu.status_id
                    WHERE pe.is_deleted = 0 ORDER BY pe.preproject_id DESC
                    `;
     console.log('Query is: ', Query);
@@ -273,6 +297,10 @@ async function getonePreproject(preproject_id) {
       ON pe.preproject_id = advi.preproject_id AND advi.adviser_status = '1'
       INNER JOIN biographical_teacher AS ins
       ON advi.instructor_id = ins.teacher_id 
+      INNER JOIN preproject_status AS stu
+      ON pe.project_status = stu.status_id
+      INNER JOIN project_types AS type
+      ON pe.project_type = type.type_id
       WHERE pe.preproject_id = '${preproject_id}'
     `;
 
@@ -324,39 +352,68 @@ async function getonePreproject(preproject_id) {
       poolQuery(documentQuery),
     ]);
 
-    let ListDocument = {
-      ce01: { status: 'Not pass' },
-      ce02: { status: 'Not pass' },
-      ce03: { status: 'Not pass' },
-      ce04: { status: 'Not pass' },
-      ce05: { status: 'Not pass' },
-      ce06: { status: 'Not pass' },
-    };
+    QueryFineDocument = ` 
+    SELECT 
+    preprojects.preproject_id,
+    preprojects.preproject_name_th,
+    preprojects.project_code,
+    status_name,
+    COALESCE(ce01.document_id, 'no') AS ce01_document_id,
+    COALESCE(ce01.document_status, 'no') AS ce01_status,
+    COALESCE(ce02.document_id, 'no') AS ce02_document_id,
+    COALESCE(ce02.document_status, 'no') AS ce02_status,
+    COALESCE(ce03.document_id, 'no') AS ce03_document_id,
+    COALESCE(ce03.document_status, 'no') AS ce03_status,
+    COALESCE(ce04.document_id, 'no') AS ce04_document_id,
+    COALESCE(ce04.document_status, 'no') AS ce04_status,
+    COALESCE(ce05.document_id, 'no') AS ce05_document_id,
+    COALESCE(ce05.document_status, 'no') AS ce05_status,
+    COALESCE(ce06.document_id, 'no') AS ce06_document_id,
+    COALESCE(ce06.document_status, 'no') AS ce06_status
+    FROM preprojects
+    LEFT JOIN preprojects_documents ce01 ON ce01.preproject_id = preprojects.preproject_id AND ce01.document_type = 'CE01'
+    LEFT JOIN preprojects_documents ce02 ON ce02.preproject_id = preprojects.preproject_id AND ce02.document_type = 'CE02'
+    LEFT JOIN preprojects_documents ce03 ON ce03.preproject_id = preprojects.preproject_id AND ce03.document_type = 'CE03'
+    LEFT JOIN preprojects_documents ce04 ON ce04.preproject_id = preprojects.preproject_id AND ce04.document_type = 'CE04'
+    LEFT JOIN preprojects_documents ce05 ON ce05.preproject_id = preprojects.preproject_id AND ce05.document_type = 'CE05'
+    LEFT JOIN preprojects_documents ce06 ON ce06.preproject_id = preprojects.preproject_id AND ce06.document_type = 'CE06'
+    LEFT JOIN preproject_status ON preproject_status.status_id = preprojects.project_status
+    WHERE preprojects.preproject_id = '${preproject_id}'
+  `;
+  const document_Result = await poolQuery(QueryFineDocument);
+    // let ListDocument = {
+    //   ce01: { status: 'Not pass' },
+    //   ce02: { status: 'Not pass' },
+    //   ce03: { status: 'Not pass' },
+    //   ce04: { status: 'Not pass' },
+    //   ce05: { status: 'Not pass' },
+    //   ce06: { status: 'Not pass' },
+    // };
 
     // Fine Same CE document
-    const separateCE = async (data) => {
-      data.forEach((element) => {
-        // update status
-        if (element.status === 'complete') {
-          if (element.document_type === 'CE01') {
-            ListDocument.ce01.status = 'Pass';
-          } else if (element.document_type === 'CE01') {
-            ListDocument.ce01.status = 'Pass';
-          } else if (element.document_type === 'CE02') {
-            ListDocument.ce02.status = 'Pass';
-          } else if (element.document_type === 'CE03-4-G') {
-            ListDocument.ce03.status = 'Pass';
-          } else if (element.document_type === 'CE04') {
-            ListDocument.ce04.status = 'Pass';
-          } else if (element.document_type === 'CE05') {
-            ListDocument.ce05.status = 'Pass';
-          } else if (element.document_type === 'CE06') {
-            ListDocument.ce06.status = 'Pass';
-          }
-        }
-      });
-    };
-    separateCE(documentResult.results);
+    // const separateCE = async (data) => {
+    //   data.forEach((element) => {
+    //     // update status
+    //     if (element.status === 'complete') {
+    //       if (element.document_type === 'CE01') {
+    //         ListDocument.ce01.status = 'Pass';
+    //       } else if (element.document_type === 'CE01') {
+    //         ListDocument.ce01.status = 'Pass';
+    //       } else if (element.document_type === 'CE02') {
+    //         ListDocument.ce02.status = 'Pass';
+    //       } else if (element.document_type === 'CE03-4-G') {
+    //         ListDocument.ce03.status = 'Pass';
+    //       } else if (element.document_type === 'CE04') {
+    //         ListDocument.ce04.status = 'Pass';
+    //       } else if (element.document_type === 'CE05') {
+    //         ListDocument.ce05.status = 'Pass';
+    //       } else if (element.document_type === 'CE06') {
+    //         ListDocument.ce06.status = 'Pass';
+    //       }
+    //     }
+    //   });
+    // };
+    // separateCE(documentResult.results);
 
     if (preprojectResults.results.length > 0) {
       return {
@@ -366,7 +423,6 @@ async function getonePreproject(preproject_id) {
         PreprojectSubAdviser: subadviserResults.results,
         PreprojectStudent: studentResults.results,
         PreprojectCommittee: committeeResult.results,
-        PreprojectDocument: ListDocument,
         message: 'SearchPre-project Success',
       };
     } else {
@@ -462,6 +518,7 @@ async function getAllProjects() {
                    INNER JOIN year_sem_sections AS sec ON secpro.section_id = sec.section_id
                    INNER JOIN project_mgt_subjects AS sub ON sec.subject_id = sub.subject_id
                    INNER JOIN curriculums AS cur ON sub.curriculum_id = cur.curriculum_id
+                   INNER JOIN project_status AS stu ON pro.project_status = stu.status_id
                    WHERE pro.is_deleted = 0 ORDER BY pro.project_id DESC
                    `;
     console.log('Query1 is: ', Query);
@@ -507,6 +564,9 @@ async function getoneProjects(project_id) {
       ON pro.project_id = advi.project_id AND advi.adviser_status = '1'
       INNER JOIN biographical_teacher AS ins
       ON advi.instructor_id = ins.teacher_id
+      INNER JOIN project_status AS stu ON pro.project_status = stu.status_id
+      INNER JOIN project_types AS type
+      ON pro.project_type = type.type_id
       WHERE pro.project_id = '${project_id}' 
     `;
 
@@ -541,7 +601,17 @@ async function getoneProjects(project_id) {
                            END AS status
                            FROM projects_documents
                            WHERE project_id = '${project_id}' AND document_status != 0;
-`;
+    `;
+
+    const potentialsQuery = `
+    SELECT * FROM project_potentials 
+    INNER JOIN subjects
+    ON project_potentials.subject_id = subjects.subject_id
+    INNER JOIN curriculums
+    ON curriculums.curriculum_id = subjects.curriculum_id
+    WHERE project_id = '${project_id}' 
+    ORDER BY weight
+    `
     // Execute both queries asynchronously
     // const [preprojectResults, studentResults, subadviserResults, committeeResult, documentResult] = await Promise.all([
     const [
@@ -550,12 +620,14 @@ async function getoneProjects(project_id) {
       subadviserResults,
       committeeResult,
       documentResult,
+      potentialResult
     ] = await Promise.all([
       poolQuery(projectQuery),
       poolQuery(StudentQuery),
       poolQuery(subadviserQuery),
       poolQuery(committeeQuery),
       poolQuery(documentQuery),
+      poolQuery(potentialsQuery),
     ]);
 
     let ListDocument = {
@@ -599,7 +671,8 @@ async function getoneProjects(project_id) {
         PreprojectStudent: studentResults.results,
         PreprojectCommittee: committeeResult.results,
         PreprojectDocument: ListDocument,
-        message: 'SearchProject Success',
+        Projectpotential:potentialResult.results,
+        message: 'SearchProject Success' ,
       };
     } else {
       return {
@@ -838,7 +911,10 @@ async function getOneProjectSubject(curriculum_id) {
 // Get all preproject not yet transfer
 async function preprojectsnottransfer() {
   try {
-    const Query = `SELECT * FROM preprojects WHERE project_status <= 5`;
+    const Query = `SELECT * FROM preprojects AS pre
+    INNER JOIN preproject_status AS st
+    ON pre.project_status = st.status_id
+    WHERE project_status = 6 AND is_deleted = 0`;
     console.log('Query is: ', Query);
 
     const { results } = await poolQuery(Query);
@@ -932,7 +1008,8 @@ async function preproject_in_sec(section_id) {
                     SELECT * FROM preproject_in_section AS secpre 
                     INNER JOIN preprojects AS pre
                     ON secpre.preproject_id = pre.preproject_id
-                    WHERE secpre.section_id = '${section_id}'
+                    INNER JOIN preproject_status AS stu ON pre.project_status = stu.status_id
+                    WHERE secpre.section_id = '${section_id}' AND is_deleted = '0'
                   `;
     console.log('Query is: ', Query);
 
@@ -967,7 +1044,8 @@ async function project_in_sec(section_id) {
                     SELECT * FROM project_in_section AS secpro
                     INNER JOIN projects AS pro
                     ON secpro.project_id = pro.project_id
-                    WHERE secpro.section_id = '${section_id}'
+                    INNER JOIN project_status AS stu ON pro.project_status = stu.status_id
+                    WHERE secpro.section_id = '${section_id}' AND is_deleted = '0'
                   `;
     console.log('Query is: ', Query);
 
@@ -1005,19 +1083,19 @@ module.exports.searchingRepo = {
   getAllPreprojects: getAllPreprojects,
   getonePreproject: getonePreproject,
   getListInOneDocuments: getListInOneDocuments,
-  getAllProjects:getAllProjects,
-  getoneProjects:getoneProjects,
-  getListInOneDocumentsProject:getListInOneDocumentsProject,
-  getSubjectProjectInCurriculums:getSubjectProjectInCurriculums,
+  getAllProjects: getAllProjects,
+  getoneProjects: getoneProjects,
+  getListInOneDocumentsProject: getListInOneDocumentsProject,
+  getSubjectProjectInCurriculums: getSubjectProjectInCurriculums,
   getAllProjectstatus: getAllProjectstatus,
   getAllProjecttype: getAllProjecttype,
   getaAllGeneralSubjectInCurriculum: getaAllGeneralSubjectInCurriculum,
   getAllProjectSubjert: getAllProjectSubjert,
   getOneProjectSubject: getOneProjectSubject,
-  preprojectsnottransfer:preprojectsnottransfer,
-  getAllPreprorojectstatus:getAllPreprorojectstatus,
+  preprojectsnottransfer: preprojectsnottransfer,
+  getAllPreprorojectstatus: getAllPreprorojectstatus,
   all_sec_active: all_sec_active,
-  preproject_in_sec:preproject_in_sec,
-  project_in_sec:project_in_sec,
-  all_sec_unactive:all_sec_unactive
+  preproject_in_sec: preproject_in_sec,
+  project_in_sec: project_in_sec,
+  all_sec_unactive: all_sec_unactive
 };

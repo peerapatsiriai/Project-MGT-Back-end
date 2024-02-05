@@ -10,10 +10,11 @@ const Project_mgt_route_authen = require("./routes/project_mgt/backOffice/authen
 const Project_mgt_route_section = require("./routes/project_mgt/backOffice/section");
 const Project_mgt_route_document = require("./routes/project_mgt/backOffice/documentfrom");
 const Project_mgt_route_instructor = require("./routes/project_mgt/instructor/instructor")
-const Project_mgt_route_teacher = require("./routes/project_mgt/teacher/teacher")
+const Project_mgt_route_teacher = require("./routes/project_mgt/teacher/teacher");
+const Project_mgt_route_student = require("./routes/project_mgt/student/student")
 
 // ------------------ Websocket ----------------- //
-const hapiPort = 8081;
+const hapiPort = 4003;
 const webPort = 3280;
 
 const init = async () => {
@@ -41,6 +42,7 @@ const init = async () => {
   Project_mgt_route_document(server)
   Project_mgt_route_instructor(server)
   Project_mgt_route_teacher(server)
+  Project_mgt_route_student(server)
   // ...
 
   // Greeting API

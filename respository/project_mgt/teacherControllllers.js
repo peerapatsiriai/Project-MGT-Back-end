@@ -23,7 +23,8 @@ async function getAllLoadByInstructorID(instructor_id) {
     ON ad.instructor_id = tea.teacher_id
     INNER JOIN preprojects AS pre
     ON pre.preproject_id = ad.preproject_id
-    WHERE ad.instructor_id = '${instructor_id}' AND CAST(pre.project_status AS SIGNED) < 6
+    INNER JOIN preproject_status AS stu ON pre.project_status = stu.status_id
+    WHERE ad.instructor_id = '${instructor_id}' AND CAST(pre.project_status AS SIGNED) < 6 AND is_deleted = 0
     `;
     const preprojectAdviser = await poolQuery(searchAdviserQuery);
     adviserCount_preproject = preprojectAdviser.length
@@ -35,7 +36,8 @@ async function getAllLoadByInstructorID(instructor_id) {
     ON com.instructor_id = tea.teacher_id 
     INNER JOIN preprojects AS pre
     ON pre.preproject_id = com.preproject_id
-    WHERE com.instructor_id = '${instructor_id}' AND CAST(pre.project_status AS SIGNED) < 6
+    INNER JOIN preproject_status AS stu ON pre.project_status = stu.status_id
+    WHERE com.instructor_id = '${instructor_id}' AND CAST(pre.project_status AS SIGNED) < 6 AND is_deleted = 0
     `;
     const preprojectCommittee = await poolQuery(searchCommitteeQuery);
     committeeCount_preproject = preprojectCommittee.length
@@ -47,7 +49,8 @@ async function getAllLoadByInstructorID(instructor_id) {
     ON ad.instructor_id = tea.teacher_id
     INNER JOIN projects AS pro
     ON pro.project_id = ad.project_id
-    WHERE ad.instructor_id = '${instructor_id}' AND CAST(pro.project_status AS SIGNED) < 9
+    INNER JOIN project_status AS stu ON pro.project_status = stu.status_id
+    WHERE ad.instructor_id = '${instructor_id}' AND CAST(pro.project_status AS SIGNED) < 9 AND is_deleted = 0
     `;
     const projectAdviser = await poolQuery(searchProjectAdviserQuery);
     adviserCount_project = projectAdviser.length
@@ -59,7 +62,8 @@ async function getAllLoadByInstructorID(instructor_id) {
     ON com.instructor_id = tea.teacher_id 
     INNER JOIN projects AS pro
     ON pro.project_id = com.project_id
-    WHERE com.instructor_id = '${instructor_id}' AND CAST(pro.project_status AS SIGNED) < 9
+    INNER JOIN project_status AS stu ON pro.project_status = stu.status_id
+    WHERE com.instructor_id = '${instructor_id}' AND CAST(pro.project_status AS SIGNED) < 9 AND is_deleted = 0
     `;
     const projectCommittee = await poolQuery(searchProjectCommitteeQuery);
     committeeCount_project = projectCommittee.length
@@ -96,7 +100,10 @@ async function getAllPost() {
     
     // Adviser Preproject
     const searchAllPostQuery = `
-    SELECT * FROM preprojects_public_relations WHERE isdelete = '0'
+    SELECT * FROM preprojects_public_relations AS pub
+    INNER JOIN biographical_teacher AS tea
+    ON pub.instructor_id = tea.teacher_id
+    WHERE isdelete = '0'
     `;
     const allpost = await poolQuery(searchAllPostQuery);
    
@@ -188,7 +195,7 @@ async function updateStatus(public_relations_id,status) {
     
     const UpdateQuery = `
     UPDATE preprojects_public_relations
-    SET status = '${status}'
+    SET public_relation_status = '${status}'
     WHERE public_relations_id = '${public_relations_id}'
     `;
     await poolQuery(UpdateQuery);
@@ -249,24 +256,43 @@ async function deletePost(public_relations_id) {
 // GET LIST Preproject and Project Ready to test
 async function preproject_ready_test() {
   try {
-    
-    
-    const searchAllTestProjectQuery = `
-    SELECT * FROM preprojects AS pre
-    INNER JOIN preproject_in_section AS presec
-    ON presec.preproject_id = pre.preproject_id
-    INNER JOIN year_sem_sections AS sec
-    ON sec.section_id = presec.section_id
-    WHERE pre.project_status = 4 AND sec.sec_status = 1;
+    var last_result = [];
 
+    const searchAllTestProjectQuery = `
+      SELECT * FROM preprojects AS pre
+      INNER JOIN preproject_in_section AS presec
+      ON presec.preproject_id = pre.preproject_id
+      INNER JOIN year_sem_sections AS sec
+      ON sec.section_id = presec.section_id
+      INNER JOIN preproject_status AS stu ON pre.project_status = stu.status_id
+      WHERE pre.project_status = 4 AND sec.sec_status = 1;
     `;
+
     const listpeproject = await poolQuery(searchAllTestProjectQuery);
-   
+
+    // Find committee status
+    for (const element of listpeproject) {
+      let preproject_id = element.preproject_id;
+
+      const searchCommitteeCountQuery = `
+        SELECT COUNT(preproject_id) FROM preprojects_committees 
+        WHERE preproject_id = '${preproject_id}'
+      `;
+
+      const result = await poolQuery(searchCommitteeCountQuery);
+
+      if (result[0]['COUNT(preproject_id)'] >= 2) element["can_rigister_status"] = 0;
+      else element["can_rigister_status"] = 1;
+
+      last_result.push(element); // Use push to add the updated element to the array
+    }
+
+    // console.log(last_result);
     return {
       statusCode: 200,
       returnCode: 0,
       message: 'Success',
-      listpeproject
+      last_result: last_result,
     };
   } catch (error) {
     console.error('Error:', error);
@@ -287,8 +313,16 @@ async function preproject_documentList(preproject_id) {
     
     
     const searchAllDocumentPreprojectQuery = `
-    SELECT DISTINCT document_type, document_name FROM preprojects_documents
-    WHERE preproject_id = '${preproject_id}'
+    SELECT
+    document_type,
+    COUNT(*) AS document_count,
+    MAX(document_id) AS max_document_id,
+    MIN(document_id) AS min_document_id,
+    GROUP_CONCAT(document_name) AS document_names
+    FROM preprojects_documents
+    WHERE preproject_id = '${preproject_id}' AND document_status = '2'
+    GROUP BY document_type;
+        
 
     `;
     const listDocument = await poolQuery(searchAllDocumentPreprojectQuery);

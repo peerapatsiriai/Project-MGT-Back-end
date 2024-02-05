@@ -2,10 +2,10 @@
 var dbconfig = {
     Dev_local: {
         //connectionLimit : 10,
-        host: 'localhost',
-        user: 'root',
-        password: '',
-        database: 'test'
+        host: '128.199.147.134',
+        user: 'dbdevuser',
+        password: '}HuTg=ouHh8^Np=',
+        database: 'se_study_db'
         //database: 'ce_project_mgt'
     },
     Dev_online: {
